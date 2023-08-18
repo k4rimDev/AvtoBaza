@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres:
+    container_name:  postgres-db
+    image:           postgres:9.6
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgredb:/var/lib/postgresql/data
+    env_file: .env
+    environment:
+      - LC_ALL=C.UTF-8
+      - VIRTUAL_HOST=postgres
+      - VIRTUAL_PORT=5432
+
+  web:
+    container_name: avto_baza
+    build: .
+    restart: "always"
+    env_file: .env
+    environment:
+      - VIRTUAL_PORT=8000
+      - TIMEOUT=300
+      - HTTP_PORT=8000
+      - STATS_PORT=8001
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    links:
+      - postgres
+    depends_on:
+      - 'postgres'
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
