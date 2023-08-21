@@ -23,4 +23,5 @@ python-decouple
 Unidecode
 xmltodict
 django-debug-toolbar
+django-rest-passwordreset
 uWSGI

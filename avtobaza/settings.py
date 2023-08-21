@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'core',
+    'apps.base_user',
+    'apps.core',
     'corsheaders',
     'rest_framework_simplejwt',
     'ckeditor',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     'rest_framework_swagger',
+    'django_rest_passwordreset',
 ]
 
 MIDDLEWARE = [
@@ -117,7 +119,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'avtobaza.wsgi.application'
 
-AUTH_USER_MODEL = 'apps.base_user.MyUser'
+AUTH_USER_MODEL = 'base_user.MyUser'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -182,10 +184,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-if not DEBUG:
+if DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
 else:
-    STATIC_ROOT = [
+    STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "static")
     ]
 
