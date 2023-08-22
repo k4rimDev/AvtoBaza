@@ -26,3 +26,4 @@ django-debug-toolbar
 django-rest-passwordreset
 uWSGI
 pytz
+django-baton

@@ -1,6 +1,8 @@
 from django.db import models
-
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+
+from apps.product.models import Product
 
 
 class MainData(models.Model):
@@ -12,7 +14,6 @@ class MainData(models.Model):
     class Meta:
         verbose_name = _('Əsas məlumatlar')
         verbose_name_plural = _('Əsas məlumatlar')
-
 
 class BrandNumber(models.Model):
     brand_logo = models.FileField(upload_to="core/brand-logo")
@@ -28,6 +29,7 @@ class BrandNumber(models.Model):
 
 class CampaignText(models.Model):
     text = models.TextField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.text
@@ -37,4 +39,21 @@ class CampaignText(models.Model):
         verbose_name_plural = _('Kampaniya məlumatları')
 
 class Slider(models.Model):
+    slug = models.SlugField(unique=True, db_index=True)
     image = models.FileField(upload_to="core/slider")
+    title = models.CharField(max_length=200)
+    is_active = models.BooleanField(default=True)
+    order_count = models.PositiveSmallIntegerField(null=True, blank=True)
+    products = models.ManyToManyField(Product, null=True,
+                                     blank=True, related_name="sliders")
+
+    def __str__(self):
+        return self.title
+    
+    def save(self) -> None:
+        self.slug = slugify(self.title)
+        return super().save()
+    
+    class Meta:
+        verbose_name = _('Slayder')
+        verbose_name_plural = _('Slayder')

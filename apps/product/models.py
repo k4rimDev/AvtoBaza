@@ -1,22 +1,33 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 
 class Brand(models.Model):
+    slug = models.SlugField(unique=True, db_index=True)
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
+    
+    def save(self) -> None:
+        self.slug = slugify(self.name)
+        return super().save()
     
     class Meta:
         verbose_name = _('Marka')
         verbose_name_plural = _('Marka')
 
 class BrandGroup(models.Model):
+    slug = models.SlugField(unique=True, db_index=True)
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
+    
+    def save(self) -> None:
+        self.slug = slugify(self.name)
+        return super().save()
     
     class Meta:
         verbose_name = _('Qrup')
@@ -24,6 +35,7 @@ class BrandGroup(models.Model):
 
 class Discount(models.Model):
     discount_percent = models.PositiveSmallIntegerField(default=10)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.discount_percent}% endirim"
@@ -38,6 +50,8 @@ class Product(models.Model):
         ("yes", "Var"),
         ("no", "Yox")
     )
+
+    slug = models.SlugField(unique=True, db_index=True)
 
     name = models.CharField(max_length=200)
     code = models.CharField(max_length=200)
@@ -56,6 +70,16 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self) -> None:
+        self.slug = slugify(self.name)
+        return super().save()
+    
+    @property
+    def discount_price(self):
+        if self.discount:
+            return self.price * (100 - self.discount.discount_percent) / 100
+        return None
     
     class Meta:
         verbose_name = _('Məhsul')

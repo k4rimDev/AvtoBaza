@@ -54,7 +54,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         'unique': _("A user with that email already exists."),
     })
 
-    first_name = models.CharField(_('First Name'), max_length=30, default='')
+    first_name = models.CharField(_('First Name'), max_length=50, default='')
     last_name = models.CharField(_('Last Name'), max_length=150, default='')
 
     is_staff = models.BooleanField(
@@ -68,11 +68,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), auto_now=True)
     last_password_forgot_request = models.DateTimeField(_('Last password request date'), auto_now_add=True)
 
-    shared_announcement_count = models.IntegerField(default=1, null=True, blank=True)
-
     showed_password = models.CharField(_('Parol (Gorunen)'), max_length=250, null=True, blank=True)
-
-    shared_announcement_date = models.DateTimeField(default=datetime.now() + timedelta(days=30))
 
     objects = CustomUserManager()
     EMAIL_FIELD = 'email'
