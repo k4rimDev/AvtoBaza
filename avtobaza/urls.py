@@ -9,8 +9,10 @@ from drf_yasg import openapi
 
 urlpatterns = [
     path('akmin/', admin.site.urls),
+    path('baton/', include('baton.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api/core/', include('apps.core.api.urls')),
+    path('api/user/', include('apps.account.api.urls')),
     path('api/order/', include('apps.order.api.urls')),
     path('api/product/', include('apps.product.api.urls')),
 ]
