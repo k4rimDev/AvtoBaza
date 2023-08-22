@@ -44,10 +44,12 @@ INSTALLED_APPS = [
 
     'apps.base_user',
     'apps.core',
+    'apps.product',
+    'apps.order',
     'corsheaders',
+    'rest_framework',
     'rest_framework_simplejwt',
     'ckeditor',
-    'rest_framework',
     'django_filters',
     'drf_yasg',
     'rest_framework_swagger',
