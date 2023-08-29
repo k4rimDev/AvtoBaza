@@ -71,8 +71,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     showed_password = models.CharField(_('Parol (Gorunen)'), max_length=250, null=True, blank=True)
 
     objects = CustomUserManager()
-    EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'username'
+    USERNAME_FIELD = 'username'
 
     class Meta:
         verbose_name = _('user')

@@ -17,7 +17,7 @@ packaging
 Pillow
 psycopg2
 # psycopg2-binary==2.7.4
-PyJWT
+PyJWT==v1.7.1
 requests
 python-decouple
 Unidecode
