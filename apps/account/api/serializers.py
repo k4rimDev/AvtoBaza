@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from apps.core import models
-
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     pagination_class = None
