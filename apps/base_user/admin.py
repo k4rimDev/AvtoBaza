@@ -12,7 +12,7 @@ class MyUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password', 'showed_password')}),
         (_('Personal info'), {'fields': (
-            'first_name', 'last_name', 'type'
+            'first_name', 'last_name', 'type', 'phone'
         )}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
@@ -20,14 +20,14 @@ class MyUserAdmin(UserAdmin):
     )
     add_fieldsets = (
         (None, {
-            'classes': ('wide',),
+            'classes': ('wide', ),
             'fields': ("email", "first_name", "last_name", 'password1', 'password2'),
         }),
     )
     list_display = ('email', 'username', 'first_name', 'last_name', 'is_staff', 'showed_password')
     list_display_links = ('email', 'username', 'first_name', 'last_name', 'is_staff', 'showed_password')
     list_filter = ('is_staff', 'is_superuser', 'groups')
-    search_fields = ('first_name', 'last_name', 'email')
+    search_fields = ('first_name', 'last_name', 'email', 'username')
     ordering = ('-date_joined',)
     filter_horizontal = ('groups', 'user_permissions',)
     readonly_fields = ('type',)
