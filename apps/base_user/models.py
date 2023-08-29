@@ -54,6 +54,16 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         'unique': _("A user with that email already exists."),
     })
 
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        }, null=True, blank=True
+    )
+
     first_name = models.CharField(_('First Name'), max_length=50, default='')
     last_name = models.CharField(_('Last Name'), max_length=150, default='')
 
