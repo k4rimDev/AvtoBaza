@@ -10,7 +10,7 @@ User = get_user_model()
 @admin.register(User)
 class MyUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'showed_password')}),
+        (None, {'fields': ('email', 'username', 'password', 'showed_password')}),
         (_('Personal info'), {'fields': (
             'first_name', 'last_name', 'type'
         )}),
