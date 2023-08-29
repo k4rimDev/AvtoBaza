@@ -24,7 +24,8 @@ class MyUserAdmin(UserAdmin):
             'fields': ("email", "first_name", "last_name", 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'showed_password')
+    list_display = ('email', 'username', 'first_name', 'last_name', 'is_staff', 'showed_password')
+    list_display_links = ('email', 'username', 'first_name', 'last_name', 'is_staff', 'showed_password')
     list_filter = ('is_staff', 'is_superuser', 'groups')
     search_fields = ('first_name', 'last_name', 'email')
     ordering = ('-date_joined',)
