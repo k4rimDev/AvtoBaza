@@ -224,7 +224,7 @@ SIMPLE_JWT = {
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=1),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(dminutesays=4),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(minutes=4),
 }
 
 
