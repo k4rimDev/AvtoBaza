@@ -1,0 +1,2 @@
+ssh root@46.101.106.224
+KhanButaGroup123A
