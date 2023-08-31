@@ -47,3 +47,19 @@ class BrandNumbersAPIView(APIView):
         serializer = serializers.BrandNumberSerializer(queryset, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class SuggestionComplaintAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS", "POST"]
+    pagination_class=None
+
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.SuggestionComplaintsSerializer(
+                data=request.data, 
+                context={'request': request}
+            )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
