@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.contrib.auth import authenticate
@@ -27,7 +26,7 @@ class MyUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("email", "first_name", "last_name")
+        fields = ("email", "username", "first_name", "last_name")
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -50,9 +49,12 @@ class MyUserCreationForm(forms.ModelForm):
 class MyUserChangeForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "password", "email")
+        fields = ("first_name", "username", "last_name", "password", "email")
         widgets = {
             "email": forms.EmailInput(attrs={
+                "class": ""
+            }),
+            "username": forms.TextInput(attrs={
                 "class": ""
             }),
             "first_name": forms.TextInput(attrs={

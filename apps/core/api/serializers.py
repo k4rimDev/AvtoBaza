@@ -18,7 +18,7 @@ class BrandNumberSerializer(serializers.ModelSerializer):
         model = models.BrandNumber
         fields = ('id', 'brand_logo', 'number', 'name')
 
-class MainDataSerializer(serializers.ModelSerializer):
+class MainDataSerializer(serializers.ModelSerializer):  
     class Meta:
         model = models.MainData
         fields = ('id', 'logo', 'favicon', 'footer_logo', 
