@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 from apps.product.models import Product
+from apps.base_user.models import User
 
 
 class MainData(models.Model):
@@ -37,6 +38,19 @@ class CampaignText(models.Model):
     class Meta:
         verbose_name = _('Kampaniya məlumatları')
         verbose_name_plural = _('Kampaniya məlumatları')
+
+class SuggestionComplaints(models.Model):
+    text = models.TextField(verbose_name="Təklif və Şikayət:")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, 
+                             related_name="suggestions",
+                             verbose_name="İstifadəçi:")
+
+    def __str__(self):
+        return f"İstifadəçinin emaili - {str(self.user.email)}"
+    
+    class Meta:
+        verbose_name = _('Təklif və şikayətlər')
+        verbose_name_plural = _('Təklif və şikayətlər')
 
 class Slider(models.Model):
     slug = models.SlugField(unique=True, db_index=True)
