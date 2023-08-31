@@ -21,7 +21,7 @@ class BrandNumberSerializer(serializers.ModelSerializer):
 class MainDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MainData
-        fields = ('id', 'logo', 'favicon')
+        fields = ('id', 'logo', 'favicon', 'footer_logo')
 
 class SuggestionComplaintsSerializer(serializers.ModelSerializer):
     class Meta:

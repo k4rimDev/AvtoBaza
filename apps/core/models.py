@@ -7,8 +7,12 @@ from apps.base_user.models import User
 
 
 class MainData(models.Model):
-    logo = models.FileField(upload_to="core/logo")
-    favicon = models.FileField(upload_to="core/favicon")
+    logo = models.FileField(verbose_name="Əsas loqo", upload_to="core/logo")
+    footer_logo = models.FileField(verbose_name="Aşağı hissədəki loqo", 
+                                   upload_to="core/logo", 
+                                   null=True, blank=True)
+    
+    favicon = models.FileField(verbose_name="Favikon", upload_to="core/favicon")
 
     def __str__(self):
         return "Əsas məlumatlar"
