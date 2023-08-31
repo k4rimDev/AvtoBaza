@@ -14,7 +14,8 @@ class MainData(models.Model):
     
     favicon = models.FileField(verbose_name="Favikon", upload_to="core/favicon")
 
-    phone_number = models.CharField(verbose_name="Bizimlə Əlaqə nömrəsi",
+    phone_number = models.CharField(max_length=30, 
+                                    verbose_name="Bizimlə Əlaqə nömrəsi",
                                     null=True, blank=True)
 
     def __str__(self):
