@@ -23,6 +23,11 @@ class MainDataSerializer(serializers.ModelSerializer):
         model = models.MainData
         fields = ('id', 'logo', 'favicon', 'footer_logo', 
                   'phone_number')
+        
+class AboutUsSerializer(serializers.ModelSerializer):  
+    class Meta:
+        model = models.AboutUs
+        fields = ('id', 'title', 'text')
 
 class SuggestionComplaintsSerializer(serializers.ModelSerializer):
     class Meta:

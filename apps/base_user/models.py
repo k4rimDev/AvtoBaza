@@ -68,6 +68,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('Last Name'), max_length=150, default='')
     phone = models.CharField(_('Phone Number'), max_length=25, default='+994(55) 555 55 55',
                              help_text='+994(55) 555 55 55')
+    
+    mac_address = models.CharField(_('Mac Address'), max_length=17, 
+                                   unique=True, null=True, blank=True)
 
     is_staff = models.BooleanField(
         _('staff status'),

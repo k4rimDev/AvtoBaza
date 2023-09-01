@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
+from ckeditor.fields import RichTextField
+
 from apps.product.models import Product
 from apps.base_user.models import User
 
@@ -23,6 +25,22 @@ class MainData(models.Model):
     class Meta:
         verbose_name = _('Əsas məlumatlar')
         verbose_name_plural = _('Əsas məlumatlar')
+
+class AboutUs(models.Model):
+    title = models.CharField(max_length=200, 
+                                    verbose_name="Başlıq",
+                                    null=True, blank=True)
+    
+    text = RichTextField(verbose_name="Ətraflı Mətn", help_text="Şəkil, link və s. əlavə oluna bilər.")
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        return "Haqqımızda"
+    
+    class Meta:
+        verbose_name = _('Haqqımızda')
+        verbose_name_plural = _('Haqqımızda')  
 
 class BrandNumber(models.Model):
     brand_logo = models.FileField(upload_to="core/brand-logo")

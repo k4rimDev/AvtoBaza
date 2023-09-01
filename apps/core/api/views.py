@@ -53,6 +53,17 @@ class BrandNumbersAPIView(APIView):
                                                        context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AboutUsAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    pagination_class=None
+
+    def get(self, request, *args, **kwargs):
+        queryset = models.AboutUs.objects.first()
+        serializer = serializers.AboutUsSerializer(queryset, many=False,
+                                                       context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SuggestionComplaintAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, ] 
