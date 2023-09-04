@@ -78,6 +78,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         help_text=_('Designates whether the user can log into this admin site.'),
     )
 
+    last_login_time = models.DateTimeField(null=True, blank=True)
+
     is_active = models.BooleanField(_('active'), default=True, help_text=_(
         'Designates whether this user should be treated as active. ''Unselect this instead of deleting accounts.'), )
     date_joined = models.DateTimeField(_('date joined'), auto_now=True)
