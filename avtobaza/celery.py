@@ -40,6 +40,6 @@ else:
 app.conf.beat_schedule = {
     'check_user_last_login_time': {
         'task': 'apps.account.tasks.check_user_last_login_time',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(hour='*/6'),
     }
 }
