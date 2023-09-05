@@ -20,7 +20,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise ValidationError(detail={"message": "User can not login"}, code=401)
         token = super().get_token(user)
 
+        # Update User last_login_time for access only one session
         user.last_login_time = settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"] + timezone.now()
+        # Update User last login for task
+        user.last_login = timezone.now()
         user.save()
 
         token['first_name'] = user.first_name

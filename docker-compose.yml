@@ -20,6 +20,7 @@ services:
     restart: "always"
     env_file: .env
     environment:
+      - VIRTUAL_HOST=46.101.106.224
       - VIRTUAL_PORT=8000
       - TIMEOUT=300
       - HTTP_PORT=8000
@@ -32,6 +33,32 @@ services:
       - postgres
     depends_on:
       - 'postgres'
+
+  redis:
+    build:
+      context: .
+      dockerfile: redis.dockerfile
+    restart: "always"
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redisdb:/var/lib/redis
+
+  celery:
+    restart: "always"
+    build:
+      context: .
+      dockerfile: celery.dockerfile
+    container_name: celery
+    env_file: .env
+    command: /venv/bin/celery --app=avtobaza.celery:app worker -B --loglevel=INFO
+    volumes:
+      - .:/code
+    links:
+      - redis
+    depends_on:
+      - "redis"
 
 networks:
   default:
