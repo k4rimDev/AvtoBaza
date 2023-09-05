@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_celery_results',
+    'django_celery_beat',
+    'celery',
+
     'apps.base_user',
     'apps.account',
     'apps.core',
@@ -128,7 +132,7 @@ AUTH_USER_MODEL = 'base_user.MyUser'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if DEBUG:
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
