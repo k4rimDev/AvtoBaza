@@ -22,7 +22,7 @@ class MainDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MainData
         fields = ('id', 'logo', 'favicon', 'footer_logo', 
-                  'phone_number')
+                  'phone_number', 'hero_section_bg')
         
 class AboutUsSerializer(serializers.ModelSerializer):  
     class Meta:

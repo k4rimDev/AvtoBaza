@@ -14,6 +14,10 @@ class MainData(models.Model):
                                    upload_to="core/logo", 
                                    null=True, blank=True)
     
+    hero_section_bg = models.FileField(verbose_name="Ana səhifədəki arxa fon şəkili", 
+                                   upload_to="core/images", 
+                                   null=True, blank=True)
+    
     favicon = models.FileField(verbose_name="Favikon", upload_to="core/favicon")
 
     phone_number = models.CharField(max_length=30, 
