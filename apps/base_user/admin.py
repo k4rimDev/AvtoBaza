@@ -16,7 +16,7 @@ class MyUserAdmin(UserAdmin):
         )}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login',)}),
+        (_('Important dates'), {'fields': ('last_login', 'last_login_time')}),
     )
     add_fieldsets = (
         (None, {

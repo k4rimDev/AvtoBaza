@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.contrib.auth import authenticate
 
+from apps.base_user.models import MyUser
+
 from PIL import Image
 
 # get custom user
@@ -48,7 +50,7 @@ class MyUserCreationForm(forms.ModelForm):
 
 class MyUserChangeForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = MyUser
         fields = ("first_name", "username", "last_name", "password", "email")
         widgets = {
             "email": forms.EmailInput(attrs={
@@ -63,6 +65,7 @@ class MyUserChangeForm(forms.ModelForm):
             "last_name": forms.TextInput(attrs={
                 "class": ""
             }),
+           
         }
 
     def __init__(self, *args, **kwargs):
