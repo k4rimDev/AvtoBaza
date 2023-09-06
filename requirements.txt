@@ -27,8 +27,8 @@ django-rest-passwordreset
 uWSGI
 pytz
 django-baton
-celery==5.1.2
-django-celery-results==2.2.0
-django-celery-beat==2.2.1
-redis==4.3.4
+celery
+django-celery-results
+django-celery-beat
+redis
 gunicorn
