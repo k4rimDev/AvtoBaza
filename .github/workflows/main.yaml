@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       postgres_main:
         image: postgres:9.6
@@ -39,7 +39,7 @@ jobs:
       - name: Setup Python 3.6
         uses: actions/setup-python@v2
         with:
-          python-version: 3.6
+          python-version:  3.6.*
       - name: Install requirements
         run: |
           pip install -r requirements.txt
