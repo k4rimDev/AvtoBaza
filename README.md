@@ -24,7 +24,7 @@ Auto Base uses a number of open source projects to work properly:
 - [DigitalOcean] - host company that project deployed there
 - [Celery] - for background tasks
 
-And of course Software Village itself is open source with a [private repository][dill]
+And of Avtobaza itself is open source with a [private repository][dill]
  on GitHub.
 
 
