@@ -32,3 +32,5 @@ django-celery-results
 django-celery-beat
 redis
 gunicorn
+django-imagekit
+easy-thumbnails
