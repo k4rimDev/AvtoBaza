@@ -2,8 +2,10 @@ from django.db import models
 
 
 class DateMixin(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True,
+                                      verbose_name="Yaranma tarixi")
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True,
+                                      verbose_name="Güncəllənmə tarixi")
 
     class Meta:
         abstract = True

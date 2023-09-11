@@ -14,8 +14,8 @@ from apps.utils.mixins import DateMixin, SlugMixin
 
 
 class Brand(DateMixin, SlugMixin):
-    brand_code = models.CharField(max_length=200)
-    name = models.CharField(max_length=200)
+    brand_code = models.CharField(max_length=20, verbose_name="Markanın kodu")
+    name = models.CharField(max_length=200, verbose_name="Markanın adı")
 
     def __str__(self):
         return self.name
@@ -30,7 +30,7 @@ class Brand(DateMixin, SlugMixin):
         verbose_name_plural = _('Marka')
 
 class BrandGroup(DateMixin, SlugMixin):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name="Qrupun adı")
 
     def __str__(self):
         return self.name
@@ -45,8 +45,9 @@ class BrandGroup(DateMixin, SlugMixin):
         verbose_name_plural = _('Qruplar')
 
 class Discount(DateMixin):
-    discount_percent = models.PositiveSmallIntegerField(default=10)
-    is_active = models.BooleanField(default=True)
+    discount_percent = models.PositiveSmallIntegerField(default=10, verbose_name="Endirim faizi",
+                                                        help_text="Məs. 10% endirim")
+    is_active = models.BooleanField(default=True, verbose_name="Aktivdir?")
 
     def __str__(self):
         return f"{self.discount_percent}% endirim"
@@ -62,20 +63,25 @@ class Product(DateMixin, SlugMixin):
         ("no", "Yox")
     )
 
-    name = models.CharField(max_length=200)
-    code = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name="Məhsulun adı")
+    code = models.CharField(max_length=200, verbose_name="Məhsulun kodu")
     brand = models.ManyToManyField(Brand, null=True, blank=True, 
-                                   related_name="products")
+                                   related_name="products",
+                                   verbose_name="Məhsulun markası")
     
     group = models.ForeignKey(BrandGroup, on_delete=models.SET_NULL,
-                              null=True, blank=True, related_name="products")
+                              null=True, blank=True, related_name="products",
+                              verbose_name="Məhsulun qrupu")
     
-    price = models.FloatField(default=0)
+    price = models.FloatField(default=0, verbose_name="Məhsulun qiyməti")
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, 
-                                 null=True, blank=True, related_name="products")
+                                 null=True, blank=True, related_name="products",
+                                 verbose_name="Məhsulun endirimi",
+                                 help_text="Əgər məhsul endirimdədirsə endirim faizini seçin")
     
-    stock_status = models.CharField(max_length=10, choices=STOCK_STATUS)
-    stock_count = models.PositiveIntegerField(default=1)
+    stock_status = models.CharField(max_length=10, choices=STOCK_STATUS, 
+                                    verbose_name="Məhsulun stok vəziyyəti")
+    stock_count = models.PositiveIntegerField(default=1, verbose_name="Məhsulun stok sayı")
 
     def __str__(self):
         return self.name
@@ -103,7 +109,8 @@ class ProductImage(DateMixin):
                                         Adjust(contrast=1.2, sharpness=1.1), ], source='image',
                                        format='JPEG', options={'quality': 90})
     
-    image = models.ImageField('Image', upload_to=logo_dir_path, null=True, blank=True, validators=[max_image_size])
+    image = models.ImageField(upload_to=logo_dir_path, null=True, blank=True, validators=[max_image_size],
+                              verbose_name="Məhsulun şəkili")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, db_index=True, related_name='images')
 
     class Meta:

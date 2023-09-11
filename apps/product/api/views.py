@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -8,11 +8,13 @@ from apps.product import models
 from apps.product.api import serializers
 
 from apps.core import models as core_models
+from apps.utils.permissions import CustomPermissionOnlyGetProducts
 
 
 class FilterProductAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
         slug = self.kwargs.get("slug")
@@ -25,6 +27,7 @@ class FilterProductAPIView(APIView):
 class BrandsAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
         queryset = models.Brand.objects.all()
@@ -35,6 +38,7 @@ class BrandsAPIView(APIView):
 class GroupsAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
         queryset = models.BrandGroup.objects.all()
@@ -45,6 +49,7 @@ class GroupsAPIView(APIView):
 class DiscountsAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
         queryset = models.Discount.objects.filter(is_active=True)
@@ -55,6 +60,7 @@ class DiscountsAPIView(APIView):
 class FilterProductsAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
         queryset = models.Product.objects.all()
@@ -87,7 +93,8 @@ class FilterProductsAPIView(APIView):
 class ProductDetailAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
-
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
+    
     def get(self, request, *args, **kwargs):
         slug = kwargs.get("slug")
         queryset = get_object_or_404(models.Product, slug=slug)

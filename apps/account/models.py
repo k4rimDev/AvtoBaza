@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+from apps.utils.mixins import DateMixin
+
+
+class UserTracking(DateMixin):
+    ...

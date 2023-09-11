@@ -1,3 +1,4 @@
 1. Write tests
-2. Use MongoDb for logging
-3. User Tracking system
+2. Use MongoDb for logging +
+3. Add logs to file
+4. User Tracking system
