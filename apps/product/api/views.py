@@ -79,6 +79,7 @@ class FilterProductsAPIView(APIView):
             discount = get_object_or_404(models.Discount, slug=discount)
             queryset = queryset.filter(discount=discount)
 
-        serializer = serializers.ProductSerializer(queryset, many=True)
+        serializer = serializers.ProductSerializer(queryset, many=True, 
+                                                   context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
