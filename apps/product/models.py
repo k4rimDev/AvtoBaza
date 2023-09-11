@@ -22,7 +22,7 @@ class Brand(DateMixin, SlugMixin):
     
     def save(self) -> None:
         if not self.slug:
-            self.slug = us_name(self.name)
+            self.slug = us_name(self)
         return super().save()
     
     class Meta:
@@ -37,7 +37,7 @@ class BrandGroup(DateMixin, SlugMixin):
     
     def save(self) -> None:
         if not self.slug:
-            self.slug = us_name(self.name)
+            self.slug = us_name(self)
         return super().save()
     
     class Meta:
@@ -82,7 +82,7 @@ class Product(DateMixin, SlugMixin):
     
     def save(self) -> None:
         if not self.slug:
-            self.slug = us_name(self.name)
+            self.slug = us_name(self)
         # for image in self.images.all():
         #     image = compress_image(image)                
         #     image.save()    

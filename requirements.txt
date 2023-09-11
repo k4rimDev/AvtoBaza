@@ -34,3 +34,7 @@ redis
 gunicorn
 django-imagekit
 easy-thumbnails
+mongoengine
+pymongo
+djongo
+pylint-mongoengine
