@@ -106,3 +106,7 @@ migrations/*
 _data/*
 _data/
 _data
+
+docker/_mongo
+docker/_mongo/
+docker/_mongo/*

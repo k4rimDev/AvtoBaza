@@ -16,7 +16,7 @@ UserModel = get_user_model()
 
 request_logger = logging.getLogger('django.request')
 
-mongoclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mongoclient = pymongo.MongoClient("mongodb://mongodb:27017/")
 avtobaza_db = mongoclient["Logs"] # set database
 
 request_logs = avtobaza_db["request_logs"] # set collections
