@@ -72,6 +72,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'apps.utils.middlewares.RequestLogMiddleware' # For logging and add to MongoDB
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True

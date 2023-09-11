@@ -102,3 +102,7 @@ venv.bak/
 migrations
 migrations/
 migrations/*
+
+_data/*
+_data/
+_data

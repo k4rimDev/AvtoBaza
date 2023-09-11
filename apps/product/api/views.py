@@ -83,3 +83,16 @@ class FilterProductsAPIView(APIView):
                                                    context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
+
+class ProductDetailAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    pagination_class=None
+
+    def get(self, request, *args, **kwargs):
+        slug = kwargs.get("slug")
+        queryset = get_object_or_404(models.Product, slug=slug)
+
+        serializer = serializers.ProductSerializer(queryset, many=False, 
+                                                   context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
