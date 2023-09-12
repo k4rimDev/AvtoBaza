@@ -7,22 +7,8 @@ from rest_framework.response import Response
 from apps.product import models
 from apps.product.api import serializers
 
-from apps.core import models as core_models
 from apps.utils.permissions import CustomPermissionOnlyGetProducts
 
-
-class FilterProductAPIView(APIView):
-    allowed_methods = ["GET", "HEAD", "OPTIONS"]
-    pagination_class=None
-    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
-
-    def get(self, request, *args, **kwargs):
-        slug = self.kwargs.get("slug")
-        slider_obj = get_object_or_404(core_models.Slider, slug=slug)
-        queryset = slider_obj.products.all().order_by("name")
-        serializer = serializers.ProductSerializer(queryset, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK) 
     
 class BrandsAPIView(APIView):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]

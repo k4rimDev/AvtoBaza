@@ -2,3 +2,5 @@
 2. Use MongoDb for logging +
 3. Add logs to file
 4. User Tracking system
+5. Naraziciliq api (qiymet, sirketin adi)
+6. Sebet

@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from ckeditor.fields import RichTextField
 
-from apps.product.models import Product
+from apps.product import models as pm
 from apps.base_user.models import User
 
 
@@ -88,8 +88,8 @@ class Slider(models.Model):
     title = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
     order_count = models.PositiveSmallIntegerField(null=True, blank=True)
-    products = models.ManyToManyField(Product, null=True,
-                                     blank=True, related_name="sliders")
+    brand = models.ForeignKey(pm.Brand, on_delete=models.CASCADE, null=True, blank=True)
+    group = models.ForeignKey(pm.BrandGroup, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title

@@ -11,4 +11,6 @@ urlpatterns = [
     path('auth/token/remove/', views.CustomLogoutAPIView.as_view(), name='custom_logout'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh_view'),
     path('logout/blacklist/', views.BlacklistTokenUpdateView.as_view(), name='blacklist'),
+
+    path('balance/', views.UserBalanceView.as_view(), name='balance'),
 ]

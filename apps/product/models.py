@@ -65,15 +65,16 @@ class Product(DateMixin, SlugMixin):
 
     name = models.CharField(max_length=200, verbose_name="Məhsulun adı")
     code = models.CharField(max_length=200, verbose_name="Məhsulun kodu")
-    brand = models.ManyToManyField(Brand, null=True, blank=True, 
-                                   related_name="products",
-                                   verbose_name="Məhsulun markası")
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL,
+                                null=True, blank=True, related_name="products",
+                                verbose_name="Məhsulun markası")
     
     group = models.ForeignKey(BrandGroup, on_delete=models.SET_NULL,
                               null=True, blank=True, related_name="products",
                               verbose_name="Məhsulun qrupu")
     
     price = models.FloatField(default=0, verbose_name="Məhsulun qiyməti")
+
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, 
                                  null=True, blank=True, related_name="products",
                                  verbose_name="Məhsulun endirimi",
@@ -81,6 +82,7 @@ class Product(DateMixin, SlugMixin):
     
     stock_status = models.CharField(max_length=10, choices=STOCK_STATUS, 
                                     verbose_name="Məhsulun stok vəziyyəti")
+    
     stock_count = models.PositiveIntegerField(default=1, verbose_name="Məhsulun stok sayı")
 
     def __str__(self):

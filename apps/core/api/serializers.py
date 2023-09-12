@@ -4,9 +4,26 @@ from apps.core import models
 
 
 class SliderSerializer(serializers.ModelSerializer):
+    brand = serializers.SerializerMethodField()
+    group = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Slider
-        fields = ('id', 'image', 'title',)
+        fields = ('id', 'image', 'title', 'brand', 'group')
+
+    def get_brand(self, obj):
+        try:
+            queryset = obj.brand.slug
+        except:
+            queryset = None
+        return queryset
+    
+    def get_group(self, obj):
+        try:
+            queryset = obj.group.slug
+        except:
+            queryset = None
+        return queryset
 
 class CampaignTextSerializer(serializers.ModelSerializer):
     class Meta:

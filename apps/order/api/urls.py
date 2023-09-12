@@ -1,10 +1,9 @@
-from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.urls import path
 
-from apps.core.api import views
+from apps.order.api import views
     
 
 urlpatterns = [
     # Slider
-    path('slider/', views.SliderAPIView.as_view(), name='slider'),   
+    path('cart/', views.CartAPIView.as_view(), name='cart'),
 ]

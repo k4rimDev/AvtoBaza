@@ -13,6 +13,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 
 from apps.account.api import serializers
+from apps.account import models
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -69,3 +70,15 @@ class CustomLogoutAPIView(APIView):
         user.save()
 
         return JsonResponse({"message": "User logout succesfully!"}, status=status.HTTP_200_OK)
+
+class UserBalanceView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    pagination_class = None
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        balance, _created = models.UserBalance.objects.get_or_create(
+            user=user
+        )
+
+        return JsonResponse({"balance": balance}, status=status.HTTP_200_OK)

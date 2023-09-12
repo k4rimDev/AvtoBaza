@@ -39,15 +39,15 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
-    brands = serializers.SerializerMethodField()
     thumb_images = serializers.SerializerMethodField()
     
     group = BrandGroupSerializer()
+    brand = BrandSerializer()
     discount = DiscountSerializer()
 
     class Meta:
         model = models.Product
-        fields = ('id', 'slug', 'code', 'name', 'brands', 
+        fields = ('id', 'slug', 'code', 'name', 'brand', 
                   'group', 'price', 'discount', 'stock_count',
                   'stock_status', 'discount_price', 'images', 
                   'thumb_images')
@@ -60,8 +60,4 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_images(self, obj):
         self.context['thumb'] = False
         serializer = ProductImageSerializer(instance=obj.images, context=self.context, many=True)
-        return serializer.data
-    
-    def get_brands(self, obj):
-        serializer = BrandSerializer(obj.brand.all(), many=True)
         return serializer.data

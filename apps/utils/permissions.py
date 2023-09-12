@@ -2,6 +2,10 @@ import os
 
 from rest_framework import permissions
 
+from decouple import config
+
+API_KEY = config('API_KEY')
+
 
 class CustomPermissionOnlyGetProducts(permissions.BasePermission):
 
@@ -9,9 +13,9 @@ class CustomPermissionOnlyGetProducts(permissions.BasePermission):
 
     def has_permission(self, request, view):
 
-        if "HTTP_API_KEY" in request.META:
-            API_KEY = request.META["HTTP_API_KEY"]
-            if API_KEY == os.getenv("API_KEY"):
+        if "API_KEY" in request.GET:
+            api_key = request.GET["API_KEY"]
+            if api_key == API_KEY:
                 return True
             return False
         

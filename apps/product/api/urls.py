@@ -9,7 +9,6 @@ urlpatterns = [
     path('discounts', views.DiscountsAPIView.as_view(), name='discounts'),
     
     # Product filter
-    path('filter-product/<str:slug>', views.FilterProductAPIView.as_view(), name='filter_product'),
     path('filter-products', views.FilterProductsAPIView.as_view(), name='filter_products'),
     path('detail/<str:slug>', views.ProductDetailAPIView.as_view(), name='product_detail'),
 ]
