@@ -9,6 +9,8 @@ from drf_yasg.utils import swagger_auto_schema
 from apps.product import models
 from apps.product.api import serializers
 
+from apps.utils.mixins import CustomPaginationMixin
+from apps.utils.paginations import StandardResultsSetPagination
 from apps.utils.permissions import CustomPermissionOnlyGetProducts
 
     
@@ -45,9 +47,9 @@ class DiscountsAPIView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
-class FilterProductsAPIView(APIView):
+class FilterProductsAPIView(APIView, CustomPaginationMixin):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
-    pagination_class=None
+    pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
@@ -73,8 +75,13 @@ class FilterProductsAPIView(APIView):
             discount = get_object_or_404(models.Discount, slug=discount)
             queryset = queryset.filter(discount=discount)
 
-        serializer = serializers.ProductSerializer(queryset, many=True, 
-                                                   context={"request": request})
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = serializers.ProductSerializer(page, many=True, context={'request': self.request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.ProductSerializer(page, many=True, context={'request': self.request})
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
@@ -117,7 +124,7 @@ class PopUpSliderAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     def get(self, request, *args, **kwargs):
-        queryset = models.PopUpSlider.objects.filter(is_active=True)
+        queryset = models.PopUpSlider.objects.filter(is_active=True).order_by("order_count")
         serializer = serializers.PopUpSliderSerializer(queryset, many=True, context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
