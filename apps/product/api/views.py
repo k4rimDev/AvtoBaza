@@ -1,9 +1,12 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
 
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from apps.product import models
@@ -49,19 +52,33 @@ class DiscountsAPIView(APIView):
 
 class FilterProductsAPIView(APIView, CustomPaginationMixin):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    parser_classes = [MultiPartParser]
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
+    @swagger_auto_schema(
+            operation_id='Create a document',
+            operation_description='Create a document by providing file and s3_key',
+            manual_parameters=[
+                openapi.Parameter('q', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product name or Product code'),
+                openapi.Parameter('brand', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product Brand slug'),
+                openapi.Parameter('group', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product Group slug'),
+                openapi.Parameter('discount', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product Discount slug')
+            ]
+            )
     def get(self, request, *args, **kwargs):
         queryset = models.Product.objects.all()
 
-        product_code = self.request.GET.get("code")
+        q = self.request.GET.get("q")
         brand = self.request.GET.get("brand")
         group = self.request.GET.get("group")
         discount = self.request.GET.get("discount")
 
-        if product_code and product_code is not None:
-            queryset = queryset.filter(code = product_code)
+        if q and q is not None:
+            queryset = queryset.filter(
+                Q(name__icontains=q) |
+                Q(code__icontains=q.replace("-", ""))
+            )
 
         if brand and brand is not None:
             brand = get_object_or_404(models.Brand, slug=brand)

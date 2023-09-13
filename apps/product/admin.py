@@ -5,8 +5,14 @@ from django.utils.translation import gettext_lazy as _
 from apps.product import models
 
 
-admin.site.register(models.Brand)
-admin.site.register(models.BrandGroup)
+@admin.register(models.Brand)
+class BrandAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+@admin.register(models.BrandGroup)
+class BrandGroupAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+    
 admin.site.register(models.Discount)
 admin.site.register(models.DiscountInfo)
 
@@ -21,6 +27,7 @@ class ProductAdmin(admin.ModelAdmin):
     empty_value_display = _('-boşdur-')
     list_display = ("code", "name", "price", "stock_count")
     search_fields = ("code", "name", "brand__name", "brand__brand_code")
+    autocomplete_fields = ('brand', 'group',)
     list_filter = ("brand__name", "group__name", "stock_status", "updated_at")
     readonly_fields = ('slug', 'created_at', 'updated_at')
     ordering = ('-created_at',)
