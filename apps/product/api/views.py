@@ -57,8 +57,8 @@ class FilterProductsAPIView(APIView, CustomPaginationMixin):
     permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
     @swagger_auto_schema(
-            operation_id='Create a document',
-            operation_description='Create a document by providing file and s3_key',
+            operation_id='Filter products',
+            operation_description='Filter products by name, code, brand_slug, group_slug and discount_slug',
             manual_parameters=[
                 openapi.Parameter('q', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product name or Product code'),
                 openapi.Parameter('brand', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product Brand slug'),
