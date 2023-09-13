@@ -4,6 +4,8 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from drf_yasg.utils import swagger_auto_schema
+
 from apps.product import models
 from apps.product.api import serializers
 
@@ -89,3 +91,22 @@ class ProductDetailAPIView(APIView):
                                                    context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PriceComplaintsAPIView(APIView):
+    allowed_methods = ["HEAD", "POST", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(operation_description="This is for complaints of user about price of product",
+                         request_body=serializers.PriceComplaintsSerializer)
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.PriceComplaintsSerializer(
+                data=request.data, 
+                context={'request': request}
+            )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

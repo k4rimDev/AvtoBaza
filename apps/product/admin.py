@@ -62,3 +62,9 @@ class ProductAdmin(admin.ModelAdmin):
     )
 
     list_display_links = list_display
+
+@admin.register(models.Complaint)
+class ComplaintAdmin(admin.ModelAdmin):
+    list_display = ("product", "user", "price", "company")
+    list_display_links = list_display
+    ordering = ["-created_at"]

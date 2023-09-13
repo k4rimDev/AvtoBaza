@@ -4,6 +4,8 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from drf_yasg.utils import swagger_auto_schema
+
 from apps.order import models
 from apps.order.api import serializers
 
@@ -27,6 +29,8 @@ class CartAPIView(APIView):
         return Response(serializers.CartSerializer(cart.cartitems.all(), many=True, 
                                                    context={"request": request}).data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_description="This is for add cart functionality API",
+                         request_body=serializers.CartSerializer)
     def post(self, request, *args, **kwargs):
         user = request.user
         cart, _created = models.Cart.objects.get_or_create(
@@ -43,6 +47,8 @@ class CartAPIView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    @swagger_auto_schema(operation_description="This is for delete cart functionality API",
+                         request_body=serializers.DeleteCartSerializer)
     def delete(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated:
@@ -52,7 +58,7 @@ class CartAPIView(APIView):
         cart, _created = models.Cart.objects.get_or_create(
             user=user
         )
-        cart_id = request.data["cart-id"]
+        cart_id = request.data["cartid"]
         cart_items = models.CartItem.objects.filter(
             cart=cart,
             id=cart_id
@@ -65,6 +71,8 @@ class CartAPIView(APIView):
 
         return Response({"message": "Cart Item successfully deleted!"}, status=status.HTTP_202_ACCEPTED)
     
+    @swagger_auto_schema(operation_description="This is for update cart functionality API",
+                         request_body=serializers.UpdateCartSerializer)
     def patch(self, request, *args, **kwargs):
         user = request.user
         cart, _created = models.Cart.objects.get_or_create(
@@ -72,7 +80,7 @@ class CartAPIView(APIView):
         )
         quantity = request.data["quantity"]
 
-        cart_item = get_object_or_404(models.CartItem, id=request.data["cart-id"], cart=cart)
+        cart_item = get_object_or_404(models.CartItem, id=request.data["cartid"], cart=cart)
 
         serializer = serializers.CartSerializer(
                 data=request.data, 
@@ -81,8 +89,7 @@ class CartAPIView(APIView):
             )
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.update(cart_item, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
