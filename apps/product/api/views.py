@@ -112,7 +112,7 @@ class PriceComplaintsAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PopUpSliderAPIView(APIView):
-    allowed_methods = ["HEAD", "OPTIONS"]
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
     permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
@@ -123,7 +123,7 @@ class PopUpSliderAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
 class DiscountInfoAPIView(APIView):
-    allowed_methods = ["HEAD", "OPTIONS"]
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
     pagination_class=None
     permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
 
