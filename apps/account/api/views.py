@@ -81,4 +81,4 @@ class UserBalanceView(APIView):
             user=user
         )
 
-        return JsonResponse({"balance": balance}, status=status.HTTP_200_OK)
+        return JsonResponse({"balance": balance.balance}, status=status.HTTP_200_OK)

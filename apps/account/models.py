@@ -10,8 +10,8 @@ class UserTracking(DateMixin):
     ...
 
 class UserBalance(DateMixin):
-    user = models.ForeignKey(bm.MyUser, related_name="balance", on_delete=models.CASCADE,
-                             verbose_name="İstifadəçi", unique=True, db_index=True)
+    user = models.OneToOneField(bm.MyUser, on_delete=models.CASCADE,
+                             verbose_name="İstifadəçi", db_index=True)
     
     balance = models.FloatField(default=0, verbose_name="Balans")
 

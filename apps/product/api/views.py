@@ -110,3 +110,26 @@ class PriceComplaintsAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PopUpSliderAPIView(APIView):
+    allowed_methods = ["HEAD", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
+
+    def get(self, request, *args, **kwargs):
+        queryset = models.PopUpSlider.objects.filter(is_active=True)
+        serializer = serializers.PopUpSliderSerializer(queryset, many=True, context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+
+class DiscountInfoAPIView(APIView):
+    allowed_methods = ["HEAD", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
+
+    def get(self, request, *args, **kwargs):
+        queryset = models.DiscountInfo.objects.first()
+        serializer = serializers.DiscountInfoSerializer(queryset, many=False, 
+                                                        context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK) 

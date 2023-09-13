@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from django.utils.translation import gettext_lazy as _
 from apps.product import models
@@ -7,6 +8,7 @@ from apps.product import models
 admin.site.register(models.Brand)
 admin.site.register(models.BrandGroup)
 admin.site.register(models.Discount)
+admin.site.register(models.DiscountInfo)
 
 class ProductImageInlineAdmin(admin.TabularInline):
     model = models.ProductImage
@@ -68,3 +70,14 @@ class ComplaintAdmin(admin.ModelAdmin):
     list_display = ("product", "user", "price", "company")
     list_display_links = list_display
     ordering = ["-created_at"]
+
+@admin.register(models.PopUpSlider)
+class PopUpSliderAdmin(admin.ModelAdmin):
+    list_display = ("get_image", "title", "is_active", "brand", "group")
+    list_display_links = list_display
+    ordering = ["-created_at"]
+
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="40" height="40"')
+
+    get_image.short_description = "Şəkil"

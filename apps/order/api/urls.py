@@ -4,6 +4,6 @@ from apps.order.api import views
     
 
 urlpatterns = [
-    # Slider
+    # Cart
     path('cart/', views.CartAPIView.as_view(), name='cart'),
 ]

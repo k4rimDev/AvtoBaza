@@ -144,3 +144,33 @@ class Complaint(DateMixin):
     class Meta:
         verbose_name = _('Qiymətə narazıçılıq edənlər')
         verbose_name_plural = _('Qiymətə narazıçılıq edənlər')
+
+class PopUpSlider(DateMixin):
+    image = models.FileField(upload_to="core/slider", verbose_name="Popup'ın şəkili")
+    title = models.CharField(max_length=200, verbose_name="Popup'ın başlığı")
+    is_active = models.BooleanField(default=True, verbose_name="Aktivdir?")
+    order_count = models.PositiveSmallIntegerField(null=True, blank=True, 
+                                                   verbose_name="Popup'ın sıra nömrəsi")
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="popupsliders", 
+                              null=True, blank=True, verbose_name="Popup'ın aid olduğu brend",
+                              help_text="Boş qala bilər")
+    group = models.ForeignKey(BrandGroup, on_delete=models.CASCADE, related_name="popupsliders",
+                              null=True, blank=True, verbose_name="Popup'ın aid olduğu qrup",
+                              help_text="Boş qala bilər")
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        verbose_name = _('Popup Slayderı')
+        verbose_name_plural = _('Popup Slayderı')
+
+class DiscountInfo(DateMixin):
+    text = models.TextField(verbose_name="Endirim haqqındakı tekst")
+
+    def __str__(self):
+        return self.text
+    
+    class Meta:
+        verbose_name = _('Endirim haqqında məlumat')
+        verbose_name_plural = _('Endirim haqqında məlumat')
