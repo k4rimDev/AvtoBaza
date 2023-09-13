@@ -61,3 +61,28 @@ class ProductSerializer(serializers.ModelSerializer):
         self.context['thumb'] = False
         serializer = ProductImageSerializer(instance=obj.images, context=self.context, many=True)
         return serializer.data
+
+class PriceComplaintsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Complaint
+        fields = ("price", "product", "company")
+
+    def validate(self, attrs):
+        text = attrs.get('company')
+        if not text:
+            raise serializers.ValidationError({"message": 'Company is required'})
+        
+        price = float(attrs.get('price'))
+        if price < 0:
+            raise serializers.ValidationError({"message": 'Price can\'t less than zero'})
+        
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        instance = models.Complaint.objects.create(
+            user=user,
+            **validated_data
+        )
+
+        return instance

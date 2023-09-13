@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from pilkit.processors import TrimBorderColor, Adjust
 
+from apps.base_user.models import MyUser
+
 # Utils
 from apps.utils.watermark import Watermark
 from apps.utils.services import logo_dir_path, compress_image
@@ -28,7 +30,7 @@ class Brand(DateMixin, SlugMixin):
     class Meta:
         verbose_name = _('Marka')
         verbose_name_plural = _('Marka')
-
+    
 class BrandGroup(DateMixin, SlugMixin):
     name = models.CharField(max_length=200, verbose_name="Qrupun adı")
 
@@ -126,3 +128,19 @@ class ProductImage(DateMixin):
         new_image = compress_image(self.image)                
         self.image = new_image            
         super().save(*args, **kwargs)
+
+class Complaint(DateMixin):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="complaints",
+                             verbose_name="İstifadəçi")
+    
+    price = models.FloatField(default=0, verbose_name="Başqa yerdə olan qiymət")
+    company = models.CharField(max_length=200, verbose_name="Şirkət adı")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="complaints",
+                                verbose_name="Məhsul")
+
+    def __str__(self):
+        return f"Məhsul: {self.product.name} Başqa yerdə olan qiymət:{self.price}"
+    
+    class Meta:
+        verbose_name = _('Qiymətə narazıçılıq edənlər')
+        verbose_name_plural = _('Qiymətə narazıçılıq edənlər')
