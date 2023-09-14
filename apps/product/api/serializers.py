@@ -46,12 +46,11 @@ class ProductSerializer(serializers.ModelSerializer):
     
     group = BrandGroupSerializer()
     brand = BrandSerializer()
-    discount = DiscountSerializer()
 
     class Meta:
         model = models.Product
         fields = ('id', 'slug', 'code', 'name', 'brand', 
-                  'group', 'price', 'discount', 'stock_count',
+                  'group', 'price', 'stock_count',
                   'stock_status', 'discount_price', 'images', 
                   'thumb_images', 'is_in_cart', 'product_count_on_cart')
     
