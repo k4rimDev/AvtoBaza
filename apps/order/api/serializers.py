@@ -36,7 +36,7 @@ class CartSerializer(serializers.ModelSerializer):
     def get_product(self, obj):
         request = self.context.get('request')
         if request and request.method == 'GET':
-            return ps.ProductSerializer(obj.product).data
+            return ps.ProductSerializer(obj.product, context=self.context).data
 
     def create(self, validated_data):
         cart = self.context["cart"]
