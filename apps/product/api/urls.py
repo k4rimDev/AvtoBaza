@@ -11,6 +11,7 @@ urlpatterns = [
     path('price-complaints', views.PriceComplaintsAPIView.as_view(), name='price_complaints'),
     path('popup-slider', views.PopUpSliderAPIView.as_view(), name='popup_slider'),
     path('discount-info', views.DiscountInfoAPIView.as_view(), name='discount_info'),
+    path('ready-filtered', views.ReadyFilteredAPIView.as_view(), name='ready_filtered'),
     
     # Product filter URLs
     path('filter-products', views.FilterProductsAPIView.as_view(), name='filter_products'),

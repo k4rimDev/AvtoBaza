@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
@@ -49,6 +51,35 @@ class DiscountsAPIView(APIView):
         serializer = serializers.DiscountSerializer(queryset, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
+
+class ReadyFilteredAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated | CustomPermissionOnlyGetProducts]
+
+    @swagger_auto_schema(
+            operation_id='Filter products and return only name or code',
+            operation_description='Filter products by name and code',
+            manual_parameters=[
+                openapi.Parameter('q', openapi.IN_QUERY, type=openapi.FORMAT_BASE64, description='Product name or Product code'),
+            ]
+            )
+    def get(self, request, *args, **kwargs):
+        q = self.request.GET.get("q")
+        queryset = models.Product.objects.all()
+        if q and q is not None:
+            queryset_code = queryset.filter(
+                code__icontains=q.replace("-", "")
+            ).values_list("code", flat=True)
+            queryset_name = queryset.filter(
+                name__icontains=q
+            ).values_list("name", flat=True)
+
+            queryset_list = list(queryset_code) + list(queryset_name)
+
+            random.shuffle(queryset_list)
+            
+        return Response(queryset_list, status=status.HTTP_200_OK) 
 
 class FilterProductsAPIView(APIView, CustomPaginationMixin):
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
