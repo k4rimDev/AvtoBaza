@@ -3,6 +3,7 @@ from rest_framework import serializers
 from easy_thumbnails.files import get_thumbnailer
 
 from apps.product import models
+from apps.order import models as om
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -40,6 +41,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     thumb_images = serializers.SerializerMethodField()
+    is_in_cart = serializers.SerializerMethodField()
+    product_count_on_cart = serializers.SerializerMethodField()
     
     group = BrandGroupSerializer()
     brand = BrandSerializer()
@@ -50,7 +53,36 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'slug', 'code', 'name', 'brand', 
                   'group', 'price', 'discount', 'stock_count',
                   'stock_status', 'discount_price', 'images', 
-                  'thumb_images')
+                  'thumb_images', 'is_in_cart', 'product_count_on_cart')
+    
+    def get_is_in_cart(self, obj):
+        user = self.context["request"].user
+        if user.is_authenticated:
+            cart = om.Cart.objects.filter(user=user)
+            if cart.exists():
+                cart_item = om.CartItem.objects.filter(
+                    cart=cart.first(),
+                    product=obj
+                )
+                if cart_item.exists():
+                    return True
+            return False
+        return False
+    
+    def get_product_count_on_cart(self, obj):
+        user = self.context["request"].user
+        if user.is_authenticated:
+            cart = om.Cart.objects.filter(user=user)
+            if cart.exists():
+                cart_item = om.CartItem.objects.filter(
+                    cart=cart.first(),
+                    product=obj
+                )
+                if cart_item.exists():
+                    return cart_item.first().quantity
+                return 0
+            return 0
+        return 0
         
     def get_thumb_images(self, obj):
         self.context['thumb'] = True
