@@ -75,3 +75,4 @@ class OrderItems(DateMixin):
     class Meta:
         verbose_name = "Sifarişin detalı"
         verbose_name_plural = "Sifarişin detalı"
+        ordering=["-created_at"]

@@ -65,8 +65,8 @@ class Product(DateMixin, SlugMixin):
         ("no", "Yox")
     )
 
-    name = models.CharField(max_length=200, verbose_name="Məhsulun adı")
-    code = models.CharField(max_length=200, verbose_name="Məhsulun kodu")
+    name = models.CharField(max_length=200, verbose_name="Məhsulun adı", db_index=True)
+    code = models.CharField(max_length=200, verbose_name="Məhsulun kodu", db_index=True)
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL,
                                 null=True, blank=True, related_name="products",
                                 verbose_name="Məhsulun markası")
