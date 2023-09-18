@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework import permissions, status
@@ -5,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from apps.order import models
 from apps.order.api import serializers
@@ -93,3 +96,85 @@ class CartAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class OrderAPIView(APIView):
+    allowed_methods = ["GET", "POST", "HEAD", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated]
+    
+    @swagger_auto_schema(
+            operation_id='Filter orders',
+            operation_description='Filter orders by status, created_at',
+            manual_parameters=[
+                openapi.Parameter('status', openapi.IN_QUERY, type=openapi.TYPE_STRING, 
+                                  enum=['all', 'pending', 'done', 'send', 'partially send', 'canceled', 'returned'],
+                                  description='Status of orders'),
+                openapi.Parameter('from', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE, description='From date to filter as YYYY-MM-DD'),
+                openapi.Parameter('to', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE, description='To date to filter as YYYY-MM-DD'),
+            ]
+        )
+    def get(self, request, *args, **kwargs):
+        queryset = models.Order.objects.filter(
+            user=request.user,
+        )
+        order_status = request.GET.get("status", None)
+        from_date = request.GET.get("from", None)
+        to_date = request.GET.get("to", None)
+
+        if order_status:
+            queryset = queryset.filter(
+                status=order_status
+            )
+        if from_date:
+            queryset = queryset.filter(
+                created_at__date__gte=datetime.strptime(from_date, "%Y-%m-%d")
+            )
+
+        if to_date:
+            queryset = queryset.filter(
+                created_at__date__lte=datetime.strptime(to_date, "%Y-%m-%d")
+            )
+
+        serializer = serializers.OrderSerializer(
+            queryset, many=True, context={"request": request}
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(operation_description="This is for create order functionality API",
+                         request_body=serializers.OrderSerializer)
+    
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        serializer = serializers.OrderSerializer(
+                data=request.data, 
+                context={'request': request, 'user': user}
+            )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class OrderDetailAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        transaction_id = self.kwargs.get("transaction_id")
+        order_item = get_object_or_404(models.Order, 
+                                       transaction_id=transaction_id)
+        
+        if order_item.user != user:
+            return Response({"message": "User can not see this order"}, 
+                            status=status.HTTP_401_UNAUTHORIZED)
+        
+        serializer = serializers.OrderDetailSerializer(order_item, many=False,
+                                                       context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

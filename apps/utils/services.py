@@ -24,3 +24,9 @@ def compress_image(image):
     else:
         new_image = image
     return new_image
+
+def generate_unique_id(counter):
+    prefix = "AVTO"
+    numeric_part = str(counter).zfill(7)
+    unique_id = prefix + numeric_part
+    return unique_id

@@ -55,8 +55,8 @@ class BrandNumber(models.Model):
         return f"{self.name} -- {self.number}"
     
     class Meta:
-        verbose_name = _('Marka nomreleri')
-        verbose_name_plural = _('Marka nomreleri')
+        verbose_name = _('Marka nömrələri')
+        verbose_name_plural = _('Marka nömrələri')
 
 class CampaignText(models.Model):
     text = models.TextField()

@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from rest_framework import serializers
+from rest_framework.validators import ValidationError
 
 from apps.order import models as om
 from apps.product import models as pm
@@ -62,3 +65,67 @@ class CartSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
+class OrderSerializer(serializers.ModelSerializer):
+    ids = serializers.ListField(required=False)
+    created_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model = om.Order
+        fields = ("transaction_id", "status", "comment",
+                  "created_at", "ids")
+        
+    def create(self, validated_data):
+        order = om.Order.objects.create(
+            user=self.context["user"],
+            comment=validated_data.pop('comment', None)
+        )
+        ids = validated_data.pop('ids')
+        if ids and len(ids) > 0 :
+            instance, _created = om.OrderItems.objects.get_or_create(order=order)
+            for i in ids:
+                cart_item = om.CartItem.objects.filter(id=i)
+                if cart_item.exists():
+                    instance.product=pm.Product.objects.filter(id=cart_item[0].product.id).first()
+                    instance.quantity = cart_item[0].quantity
+                    instance.save()
+                    cart_item[0].delete()
+                else:
+                    order.delete()
+                    return ValidationError({"message": "Order deleted"})
+            return instance
+        else:
+            return ValidationError({"message": "Cart items Id's must added"})
+        
+    def get_created_at(self, obj):
+        formatted_time = datetime.strftime(
+            obj.created_at,
+            "%Y-%m-%d %H:%M:%S"
+        )
+        return formatted_time
+    
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ps.ProductSerializer()
+    class Meta:
+        model = om.OrderItems
+        fields = ("id", "quantity", "product")     
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    items = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model = om.Order
+        fields = ("transaction_id", "status", "comment",
+                  "created_at", "items")
+        
+    def get_items(self, obj):
+        items = obj.orderitems.all()
+        serializers = OrderItemSerializer(items, many=True, context=self.context)
+        return serializers.data
+    
+    def get_created_at(self, obj):
+        formatted_time = datetime.strftime(
+            obj.created_at,
+            "%Y-%m-%d %H:%M:%S"
+        )
+        return formatted_time
