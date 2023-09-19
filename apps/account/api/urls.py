@@ -13,4 +13,5 @@ urlpatterns = [
     path('logout/blacklist/', views.BlacklistTokenUpdateView.as_view(), name='blacklist'),
 
     path('balance/', views.UserBalanceView.as_view(), name='balance'),
+    path('user-balance-activity/', views.UserBalanceActivityView.as_view(), name='user_balance'),
 ]

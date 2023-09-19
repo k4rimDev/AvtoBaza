@@ -10,4 +10,7 @@ urlpatterns = [
     # Order APIs
     path('orders/', views.OrderAPIView.as_view(), name='order'),
     path('orders/<str:transaction_id>', views.OrderDetailAPIView.as_view(), name='order_detail'),
+
+    # Balance
+    path('check-balance/', views.CheckBalanceAPIView.as_view(), name='check_balance'),
 ]

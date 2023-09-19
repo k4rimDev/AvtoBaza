@@ -7,3 +7,13 @@ ORDER_STATUS = (
     ("canceled", "Ləğv edildi"),
     ("returned", "Qaytarıldı"),
 )
+
+TRANSACTION_TYPE = (
+    ("income", "Mədaxil"),
+    ("outcome", "Məxaric")
+)
+
+CURRENT_ACCOUNT_DESC_TYPE = (
+    ("income", "Mədaxil"),
+    ("outcome", "Məxaric")
+)

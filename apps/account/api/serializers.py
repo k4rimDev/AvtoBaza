@@ -1,6 +1,8 @@
 from datetime import timedelta
 
 from django.utils import timezone
+
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import empty
@@ -9,6 +11,8 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework_simplejwt.settings import api_settings
 
 from django.conf import settings
+
+from apps.account import models
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -59,4 +63,8 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
             data["refresh"] = str(refresh)
 
         return data
-    
+
+class UserBalanceActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserBalance
+        fields = ("balance", "description", "transaction_type", "changed_balance")

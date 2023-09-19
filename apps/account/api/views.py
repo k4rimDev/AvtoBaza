@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.db.models import Q
 
 from rest_framework import status, permissions
 from rest_framework.views import APIView
@@ -10,7 +11,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-
 
 from apps.account.api import serializers
 from apps.account import models
@@ -81,4 +81,24 @@ class UserBalanceView(APIView):
             user=user
         )
 
-        return JsonResponse({"balance": balance.balance}, status=status.HTTP_200_OK)
+        return JsonResponse(
+            {"balance": balance.balance, "transaction_type": balance.transaction_type},
+            status=status.HTTP_200_OK
+        )
+
+class UserBalanceActivityView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    pagination_class = None
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        balance = models.UserBalance.objects.filter(
+            Q(user=user), ~Q(transaction_type=None),
+            ~Q(description=None)
+        )
+
+        serializer_class = serializers.UserBalanceActivitySerializer(
+            balance, many=True, context={"request": request}
+        )
+
+        return Response(serializer_class.data, status=status.HTTP_200_OK)

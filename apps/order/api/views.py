@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from apps.account import models as am
+
 from apps.order import models
 from apps.order.api import serializers
 
@@ -184,3 +186,25 @@ class OrderDetailAPIView(APIView):
                                                        context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CheckBalanceAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        ids = request.GET.get("ids", None)
+        balance = 0
+        if ids:
+            for i in ids[1:len(ids) - 1].split(","):
+                balance += models.CartItem.objects.get(id=int(i)).total_price
+
+            user_balance = am.Balance.objects.get(user=user).balance
+
+            if balance < user_balance:
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
