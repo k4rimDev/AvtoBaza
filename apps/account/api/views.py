@@ -82,7 +82,7 @@ class UserBalanceView(APIView):
         )
 
         return JsonResponse(
-            {"balance": balance.balance, "transaction_type": balance.transaction_type},
+            {"balance": balance.balance},
             status=status.HTTP_200_OK
         )
 
