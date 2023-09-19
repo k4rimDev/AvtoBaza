@@ -77,7 +77,7 @@ class UserBalanceView(APIView):
     def get(self, request, *args, **kwargs):
         user = request.user
 
-        balance, _created = models.UserBalance.objects.get_or_create(
+        balance, _created = models.Balance.objects.get_or_create(
             user=user
         )
 
