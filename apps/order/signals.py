@@ -7,7 +7,6 @@ from apps.utils import services
 
 @receiver(post_save, sender=models.Order)
 def generate_transaction_id(sender, instance, created, **kwargs):
-    print("sdfs")
     if created:
         instance.transaction_id = services.generate_unique_id(instance.id)
         instance.save()

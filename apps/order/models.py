@@ -67,10 +67,16 @@ class OrderItems(DateMixin):
                                 on_delete=models.CASCADE, verbose_name="Məhsul",
                                 null=True, blank=True)
     
+    status = models.CharField(max_length=50, choices=constants.ORDER_STATUS, 
+                              default="pending", verbose_name="Sifarişin statusu")
+    
     quantity = models.PositiveSmallIntegerField(default=1, verbose_name="Məhsulun sayı")
 
     def __str__(self):
-        return self.product.name
+        try:
+            return self.product.name
+        except:
+            return self.order.transaction_id
     
     class Meta:
         verbose_name = "Sifarişin detalı"

@@ -148,14 +148,20 @@ class OrderAPIView(APIView):
     
     def post(self, request, *args, **kwargs):
         user = request.user
+        order_instance = models.Order.objects.create(
+            user=user,
+            comment=request.POST.get('comment', None)
+        )
         serializer = serializers.OrderSerializer(
                 data=request.data, 
-                context={'request': request, 'user': user}
+                context={'request': request, 'user': user, 'order': order_instance}
             )
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        order_instance.delete()
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
