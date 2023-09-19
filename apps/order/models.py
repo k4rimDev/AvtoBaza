@@ -58,6 +58,7 @@ class Order(DateMixin):
     class Meta:
         verbose_name = _('Sifariş')
         verbose_name_plural = _('Sifarişlər')
+        ordering=["-created_at"]
 
 class OrderItems(DateMixin):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderitems",
