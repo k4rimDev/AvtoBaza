@@ -91,6 +91,11 @@ class CustomManager(models.Manager):
         return super(CustomManager, self).bulk_create(objs,**kwargs)
 
 class OrderItems(DateMixin):
+
+    transaction_id = models.CharField(max_length=12, unique=True,
+                                      null=True, blank=True,
+                                      verbose_name="Sifarişin kodu")
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderitems",
                                         verbose_name="Sifariş")
     

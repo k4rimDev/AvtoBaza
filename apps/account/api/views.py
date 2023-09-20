@@ -14,6 +14,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from apps.account.api import serializers
 from apps.account import models
+from apps.order import models as om
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -45,7 +46,7 @@ class MyTokenRefreshView(TokenRefreshView):
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     
-class BlacklistTokenUpdateView(APIView):
+class   BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = ()
     allowed_methods = ('GET', 'HEAD', 'POST', )
@@ -71,7 +72,7 @@ class CustomLogoutAPIView(APIView):
 
         return JsonResponse({"message": "User logout succesfully!"}, status=status.HTTP_200_OK)
 
-class UserBalanceView(APIView):
+class UserBalanceAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated, )
     pagination_class = None
     def get(self, request, *args, **kwargs):
@@ -86,7 +87,7 @@ class UserBalanceView(APIView):
             status=status.HTTP_200_OK
         )
 
-class UserBalanceActivityView(APIView):
+class UserBalanceActivityAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated, )
     pagination_class = None
     def get(self, request, *args, **kwargs):
@@ -102,3 +103,28 @@ class UserBalanceActivityView(APIView):
         )
 
         return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+class UserBalanceActivityDetailAPIView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    pagination_class = None
+    def get(self, request, *args, **kwargs):
+        transaction_id = self.kwargs.get("transaction_id", None)
+        if transaction_id and om.OrderItems.objects.filter(transaction_id=transaction_id).exists():
+            user = request.user
+
+            balance = models.UserBalance.objects.filter(
+                Q(user=user), ~Q(transaction_type=None),
+                ~Q(description=None), Q(order__transaction_id=transaction_id)
+            )
+
+            if balance.exists():
+
+                serializer_class = serializers.UserBalanceActivityDetailSerializer(
+                    balance.first(), many=False, context={"request": request}
+                )
+
+                return Response(serializer_class.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "Not found!"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "Not found!"}, status=status.HTTP_404_NOT_FOUND)
+    

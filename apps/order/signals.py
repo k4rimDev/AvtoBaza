@@ -16,6 +16,10 @@ def generate_transaction_id(sender, instance, created, **kwargs):
 @receiver(post_save, sender=models.OrderItems)
 def update_balance(sender, instance, created, **kwargs):
     if created:
+        
+        instance.transaction_id = services.generate_unique_id_order_items(instance.id)
+        instance.save()
+
         balance = am.Balance.objects.get(
             user=instance.order.user
         )
@@ -25,6 +29,7 @@ def update_balance(sender, instance, created, **kwargs):
         user_balance = am.UserBalance.objects.create(
             user=instance.order.user,
             balance = instance.total_price,
+            order=instance,
             description=f"{instance.product.name} məhsulunun realizasiyası",
             transaction_type="outcome"
         )

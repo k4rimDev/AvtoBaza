@@ -12,6 +12,8 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh_view'),
     path('logout/blacklist/', views.BlacklistTokenUpdateView.as_view(), name='blacklist'),
 
-    path('balance/', views.UserBalanceView.as_view(), name='balance'),
-    path('user-balance-activity/', views.UserBalanceActivityView.as_view(), name='user_balance'),
+    path('balance/', views.UserBalanceAPIView.as_view(), name='balance'),
+    path('user-balance-activity/', views.UserBalanceActivityAPIView.as_view(), name='user_balance'),
+    path('user-balance-activity/<str:transaction_id>', views.UserBalanceActivityDetailAPIView.as_view(), 
+         name='user_balance_detail'),
 ]

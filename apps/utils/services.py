@@ -30,3 +30,7 @@ def generate_unique_id(counter):
     numeric_part = str(counter).zfill(7)
     unique_id = prefix + numeric_part
     return unique_id
+
+def generate_unique_id_order_items(counter):
+    unique_id = str(counter).zfill(11)
+    return unique_id

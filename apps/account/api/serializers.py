@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime
 
 from django.utils import timezone
 
@@ -13,6 +13,7 @@ from rest_framework_simplejwt.settings import api_settings
 from django.conf import settings
 
 from apps.account import models
+from apps.order.api import serializers as orderser
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -65,6 +66,49 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
         return data
 
 class UserBalanceActivitySerializer(serializers.ModelSerializer):
+    created_at = serializers.SerializerMethodField()
+    transaction_id = serializers.SerializerMethodField()
     class Meta:
         model = models.UserBalance
-        fields = ("balance", "remain_balance", "description", "transaction_type",)
+        fields = ("balance", "remain_balance", "description", "transaction_type", "created_at",
+                  "transaction_id")
+
+    def get_transaction_id(self, obj):
+        if obj.order:
+            return obj.order.transaction_id
+        return None
+    
+    def get_created_at(self, obj):
+        formatted_time = datetime.strftime(
+            obj.created_at,
+            "%Y-%m-%d %H:%M:%S"
+        )
+        return formatted_time
+
+class UserBalanceActivityDetailSerializer(serializers.ModelSerializer):
+    created_at = serializers.SerializerMethodField()
+    transaction_id = serializers.SerializerMethodField()
+    items = serializers.SerializerMethodField()
+    class Meta:
+        model = models.UserBalance
+        fields = ("balance", "remain_balance", "description", "transaction_type", "created_at",
+                  "transaction_id", "items")
+
+    def get_transaction_id(self, obj):
+        if obj.order:
+            return obj.order.transaction_id
+        return None
+    
+    def get_items(self, obj):
+        if obj.order:
+            serializer = orderser.OrderItemSerializer(obj.order, many=False, 
+                                                  context=self.context)
+            return serializer.data
+        return None
+    
+    def get_created_at(self, obj):
+        formatted_time = datetime.strftime(
+            obj.created_at,
+            "%Y-%m-%d %H:%M:%S"
+        )
+        return formatted_time

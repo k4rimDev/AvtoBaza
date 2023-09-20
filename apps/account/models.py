@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from apps.base_user import models as bm
+from apps.order import models as om
 
 from apps.utils.mixins import DateMixin
 from apps.utils import constants
@@ -44,6 +45,10 @@ class UserBalance(DateMixin):
     
     balance = models.FloatField(default=0, verbose_name="Balans")
     remain_balance = models.FloatField(default=0, verbose_name="Qalıq balans")
+
+    order = models.ForeignKey(om.OrderItems, on_delete=models.CASCADE,
+                              related_name="userbalaces",
+                              verbose_name="Sifariş", null=True, blank=True)
     
     description = models.CharField(max_length=100, verbose_name="Ətraflı", null=True, blank=True)
 
