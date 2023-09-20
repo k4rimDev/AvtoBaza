@@ -101,9 +101,9 @@ class UserBalanceActivityDetailSerializer(serializers.ModelSerializer):
     
     def get_items(self, obj):
         if obj.order:
-            serializer = orderser.OrderItemSerializer(obj.order, many=True, 
+            serializer = orderser.OrderItemSerializer(obj.order, many=False, 
                                                   context=self.context)
-            return serializer.data
+            return [serializer.data]
         return None
     
     def get_created_at(self, obj):
