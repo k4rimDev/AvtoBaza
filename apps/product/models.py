@@ -124,8 +124,9 @@ class ProductImage(DateMixin):
     def __str__(self) -> str:
         return f"{self.product.name}-un {self.id}-cı şəkili"
     
-    def save(self, *args, **kwargs):                               
-        self.image = compress_image(self.image)
+    def save(self, *args, **kwargs):  
+        if not self.id:                             
+            self.image = compress_image(self.image)
         super().save(*args, **kwargs)
 
 class Complaint(DateMixin):
