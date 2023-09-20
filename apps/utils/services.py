@@ -12,17 +12,14 @@ def logo_dir_path(instance, filename):
     return new_filename
 
 def compress_image(image):
-    if image.size > 1000000:
-        im = PILImage.open(image)
-        im_io = BytesIO() 
-        try:
-            im.save(im_io, 'WEBP', quality=30) 
-        except:
-            im = im.convert("RGB")
-            im.save(im_io, 'WEBP', quality=30) 
-        new_image = File(im_io, name=image.name)
-    else:
-        new_image = image
+    im = PILImage.open(image)
+    im_io = BytesIO() 
+    try:
+        im.save(im_io, 'WEBP', quality=30) 
+    except:
+        im = im.convert("RGB")
+        im.save(im_io, 'WEBP', quality=30) 
+    new_image = File(im_io, name=image.name)
     return new_image
 
 def generate_unique_id(counter):
