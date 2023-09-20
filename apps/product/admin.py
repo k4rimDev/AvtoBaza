@@ -18,8 +18,8 @@ admin.site.register(models.DiscountInfo)
 
 class ProductImageInlineAdmin(admin.TabularInline):
     model = models.ProductImage
-    extra = 0
-    min = 1
+    extra = 1
+    min_num = 0
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):

@@ -125,7 +125,7 @@ class ProductImage(DateMixin):
         return f"{self.product.name}-un {self.id}-cı şəkili"
     
     def save(self, *args, **kwargs):  
-        if not self.id:                             
+        if not self.id:       
             self.image = compress_image(self.image)
         super().save(*args, **kwargs)
 
