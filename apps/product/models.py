@@ -148,6 +148,7 @@ class Complaint(DateMixin):
 class PopUpSlider(DateMixin):
     image = models.FileField(upload_to="core/slider", verbose_name="Popup'ın şəkili")
     title = models.CharField(max_length=200, verbose_name="Popup'ın başlığı")
+    description = models.TextField(verbose_name="Popup'ın mətni", null=True, blank=True)
     is_active = models.BooleanField(default=True, verbose_name="Aktivdir?")
     order_count = models.PositiveSmallIntegerField(null=True, blank=True, 
                                                    verbose_name="Popup'ın sıra nömrəsi")

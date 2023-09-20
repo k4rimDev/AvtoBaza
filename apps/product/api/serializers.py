@@ -124,7 +124,7 @@ class PopUpSliderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.PopUpSlider
-        fields = ('id', 'image', 'title', 'brand', 'group')
+        fields = ('id', 'image', 'title', 'description', 'brand', 'group')
 
     def get_brand(self, obj):
         try:
