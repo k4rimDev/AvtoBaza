@@ -21,4 +21,14 @@ def update_balance(sender, instance, created, **kwargs):
         )
         balance.balance -= instance.total_price
         balance.save()
+
+        user_balance = am.UserBalance.objects.create(
+            user=instance.order.user,
+            balance = instance.total_price,
+            description=f"{instance.product.name} məhsulunun realizasiyası",
+            transaction_type="outcome"
+        )
+
+        user_balance.remain_balance = balance.balance
+        user_balance.save()
         

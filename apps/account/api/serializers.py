@@ -67,4 +67,4 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 class UserBalanceActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.UserBalance
-        fields = ("balance", "description", "transaction_type", "changed_balance")
+        fields = ("balance", "remain_balance", "description", "transaction_type",)

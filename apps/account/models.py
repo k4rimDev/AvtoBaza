@@ -43,6 +43,7 @@ class UserBalance(DateMixin):
                              related_name="userbalances")
     
     balance = models.FloatField(default=0, verbose_name="Balans")
+    remain_balance = models.FloatField(default=0, verbose_name="Qalıq balans")
     
     description = models.CharField(max_length=100, verbose_name="Ətraflı", null=True, blank=True)
 
@@ -51,24 +52,6 @@ class UserBalance(DateMixin):
                                         null=True, blank=True,
                                         verbose_name="Mədaxil & Məxaric")
     
-    @property
-    def changed_balance(self):
-        try:
-            previous_balance = UserBalance.objects. \
-                filter(Q(user=self.user), Q(id__lt=self.id)).order_by("created_at").last().balance
-        except:
-            previous_balance = 0
-
-        return self.balance - previous_balance
-    
-    def save(self, *args, **kwargs) -> None:
-        if self.changed_balance < 0:
-            self.transaction_type = "outcome"
-        elif self.changed_balance > 0:
-            self.transaction_type = "income"
-
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return "{user}'in balansı ----- {balance}".format(user=self.user.email, balance=self.balance)
     
