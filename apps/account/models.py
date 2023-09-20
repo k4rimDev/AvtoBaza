@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from apps.base_user import models as bm
@@ -54,7 +55,7 @@ class UserBalance(DateMixin):
     def changed_balance(self):
         try:
             previous_balance = UserBalance.objects. \
-                filter(user=self.user).order_by("created_at")[0].balance
+                filter(Q(user=self.user), Q(id__lt=self.id)).order_by("created_at").last().balance
         except:
             previous_balance = 0
 

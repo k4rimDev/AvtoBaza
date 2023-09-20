@@ -150,20 +150,22 @@ class OrderAPIView(APIView):
     
     def post(self, request, *args, **kwargs):
         user = request.user
-        order_instance = models.Order.objects.create(
-            user=user,
-            comment=request.POST.get('comment', None)
-        )
         serializer = serializers.OrderSerializer(
                 data=request.data, 
-                context={'request': request, 'user': user, 'order': order_instance}
+                context={'request': request, 'user': user}
             )
-
         if serializer.is_valid():
-            serializer.save()
+            order_instance = serializer.save()
+            order_item_serializer = serializers.OrderItemCreateSerializer(
+                data=request.data,
+                context={'request': request, 'order': order_instance}
+            )
+            if order_item_serializer.is_valid():
+                order_item_serializer.create(order_item_serializer.validated_data)
+            else:
+                order_instance.delete()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-        order_instance.delete()
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -197,14 +199,21 @@ class CheckBalanceAPIView(APIView):
         ids = request.GET.get("ids", None)
         balance = 0
         if ids:
-            for i in ids[1:len(ids) - 1].split(","):
-                balance += models.CartItem.objects.get(id=int(i)).total_price
+            try:
+                for i in ids[1:len(ids) - 1].split(","):
+                    try:
+                        balance += models.CartItem.objects.get(id=int(i)).total_price
+                    except:    
+                        balance += 0
 
-            user_balance = am.Balance.objects.get(user=user).balance
+                user_balance = am.Balance.objects.get(user=user).balance
 
-            if balance < user_balance:
-                return Response(status=status.HTTP_200_OK)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+                if balance < user_balance:
+                    return Response({"message": "Balance is enough!"},
+                                    status=status.HTTP_200_OK)
+                else:
+                    return Response({"message": "Balance is not enough!"}, 
+                                    status=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response({"message": "Unstuructured list or Unknown cart ID"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Ids is not found!"}, status=status.HTTP_400_BAD_REQUEST)

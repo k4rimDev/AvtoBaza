@@ -75,6 +75,41 @@ class OrderSerializer(serializers.ModelSerializer):
                   "created_at", "ids")
         
     def create(self, validated_data):
+        ids = validated_data.pop("ids")
+        instance = om.Order.objects.create(
+            user=self.context["user"],
+            comment=validated_data["comment"]
+        )
+
+        return instance
+        
+    def get_created_at(self, obj):
+        try:
+            formatted_time = datetime.strftime(
+            obj.created_at,
+                "%Y-%m-%d %H:%M:%S"
+            )
+            return formatted_time
+        except:
+            return None
+        
+    def validate_ids(self, field):
+        if not len(field) > 0:
+            raise ValidationError({"message": "Ids must added"})
+        for i in field:
+            if not om.CartItem.objects.filter(id=i).exists():
+                raise ValidationError({"message": "Id not exists"})
+        return field
+    
+class OrderItemCreateSerializer(serializers.ModelSerializer):
+    ids = serializers.ListField(required=False)
+    created_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model = om.OrderItems
+        fields = ("status", "created_at", "ids")
+        
+    def create(self, validated_data):
         ids = validated_data.pop('ids')
         instance_list = []
         order_instance = self.context.get('order')
@@ -85,12 +120,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 if cart_item.exists():
                     instance_product = pm.Product.objects.filter(id=cart_item[0].product.id).first()
                     instance_quantity = cart_item[0].quantity
-                    instance_list.append(om.OrderItems(order=order_instance, product=instance_product, quantity=instance_quantity))
-                    cart_item[0].delete()
-            
-            instance = om.OrderItems.objects.bulk_create(instance_list)
-
-            return instance
+                    om.OrderItems.objects.create(order=order_instance, product=instance_product, quantity=instance_quantity)
+            return instance_list
         else:
             raise serializers.ValidationError({"message": "Cart items Id's must be added"})
         
@@ -111,7 +142,7 @@ class OrderSerializer(serializers.ModelSerializer):
             if not om.CartItem.objects.filter(id=i).exists():
                 raise ValidationError({"message": "Id not exists"})
         return field
-    
+ 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ps.ProductSerializer()
     class Meta:
