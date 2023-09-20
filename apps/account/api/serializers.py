@@ -101,7 +101,7 @@ class UserBalanceActivityDetailSerializer(serializers.ModelSerializer):
     
     def get_items(self, obj):
         if obj.order:
-            serializer = orderser.OrderItemSerializer(obj.order, many=False, 
+            serializer = orderser.OrderItemSerializer(obj.order, many=True, 
                                                   context=self.context)
             return serializer.data
         return None
