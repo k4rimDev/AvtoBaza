@@ -162,6 +162,11 @@ class PopUpSlider(DateMixin):
     def __str__(self):
         return self.title
     
+    def save(self, *args, **kwargs):  
+        if not self.id:       
+            self.image = compress_image(self.image)
+        super().save(*args, **kwargs)
+    
     class Meta:
         verbose_name = _('Popup Slayderı')
         verbose_name_plural = _('Popup Slayderı')

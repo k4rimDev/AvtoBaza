@@ -6,6 +6,7 @@ from ckeditor.fields import RichTextField
 
 from apps.product import models as pm
 from apps.base_user.models import User
+from apps.utils.services import compress_image
 
 
 class MainData(models.Model):
@@ -26,6 +27,12 @@ class MainData(models.Model):
 
     def __str__(self):
         return "Əsas məlumatlar"
+    
+    def save(self, *args, **kwargs):  
+        if not self.id:       
+            self.hero_section_bg = compress_image(self.hero_section_bg)
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = _('Əsas məlumatlar')
         verbose_name_plural = _('Əsas məlumatlar')
@@ -94,9 +101,11 @@ class Slider(models.Model):
     def __str__(self):
         return self.title
     
-    def save(self) -> None:
+    def save(self, *args, **kwargs):  
         self.slug = slugify(self.title)
-        return super().save()
+        if not self.id:       
+            self.image = compress_image(self.image)
+        super().save(*args, **kwargs)
     
     class Meta:
         verbose_name = _('Slayder')
