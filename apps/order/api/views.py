@@ -10,6 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from apps.account import models as am
+from apps.product import models as pm
 
 from apps.order import models
 from apps.order.api import serializers
@@ -47,7 +48,16 @@ class CartAPIView(APIView):
             )
 
         if serializer.is_valid():
-            serializer.save()
+            s = serializer.save()
+            user_tracking = am.UserTracking.objects.create(
+                        user=user
+                    )
+
+            user_tracking.description = f"""
+                {user} istifadəçi {s.product} məhsulu {s.quantity} dəfə səbətə
+                əlavə etdi.
+            """
+            user_tracking.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -71,7 +81,16 @@ class CartAPIView(APIView):
 
         if not cart_items.exists():
             return Response({"message": "Cart item not exists!"}, status=status.HTTP_404_NOT_FOUND)
+
+        user_tracking = am.UserTracking.objects.create(
+            user=user
+        )
+        user_tracking.description = f"""
+            {user} istifadəçi {cart_items[0].product} məhsulunu səbətdən sildi.
+        """
         
+        user_tracking.save()
+
         cart_items.delete()
 
         return Response({"message": "Cart Item successfully deleted!"}, status=status.HTTP_202_ACCEPTED)
@@ -158,7 +177,7 @@ class OrderAPIView(APIView):
             order_instance = serializer.save()
             order_item_serializer = serializers.OrderItemCreateSerializer(
                 data=request.data,
-                context={'request': request, 'order': order_instance}
+                context={'request': request, 'order': order_instance, 'user': user}
             )
             if order_item_serializer.is_valid():
                 order_item_serializer.create(order_item_serializer.validated_data)

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 
 from apps.core import models
+from apps.account import models as am
 from apps.core.api import serializers
 from apps.utils.permissions import CustomPermissionOnlyGetProducts
 
@@ -69,6 +70,7 @@ class SuggestionComplaintAPIView(APIView):
     pagination_class=None
 
     def post(self, request, *args, **kwargs):
+        user = request.user
         serializer = serializers.SuggestionComplaintsSerializer(
                 data=request.data, 
                 context={'request': request}
@@ -76,6 +78,13 @@ class SuggestionComplaintAPIView(APIView):
 
         if serializer.is_valid():
             serializer.save()
+            user_tracking = am.UserTracking.objects.create(
+                user=user
+            )
+            user_tracking.description = f"""
+                {user} istifadəçi təklif və şikayət bildirdi
+            """
+            user_tracking.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

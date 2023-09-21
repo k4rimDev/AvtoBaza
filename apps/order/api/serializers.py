@@ -5,6 +5,7 @@ from rest_framework.validators import ValidationError
 
 from apps.order import models as om
 from apps.product import models as pm
+from apps.account import models as am
 from apps.product.api import serializers as ps
 
 
@@ -24,7 +25,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = om.CartItem
-        fields = ('id', 'product', 'product_id', 'quantity')
+        fields = ('id', 'product', 'product_id', 'quantity') # product_id for add item to cart
 
     def validate_product_id(self, value):
         request = self.context.get('request')
@@ -121,6 +122,17 @@ class OrderItemCreateSerializer(serializers.ModelSerializer):
                     instance_product = pm.Product.objects.filter(id=cart_item[0].product.id).first()
                     instance_quantity = cart_item[0].quantity
                     om.OrderItems.objects.create(order=order_instance, product=instance_product, quantity=instance_quantity)
+                    user_tracking = am.UserTracking.objects.create(
+                        user=self.context["user"]
+                    )
+                    user_tracking.description = f"""
+                        {self.context["user"]} istifadəçi {instance_product} məhsulunu sifariş verdi.
+                    """
+                    
+                    user_tracking.save()
+
+                    cart_item.delete()
+
             return instance_list
         else:
             raise serializers.ValidationError({"message": "Cart items Id's must be added"})

@@ -14,7 +14,7 @@ class UserTracking(DateMixin):
                              verbose_name="İstifadəçi", db_index=True,
                              related_name="usertracking")
     
-    description = models.TextField(verbose_name="Ətraflı")
+    description = models.TextField(verbose_name="Ətraflı", null=True, blank=True)
 
     def __str__(self):
         return "{user}'in ----- {desc}".format(user=self.user.email, desc=self.description)

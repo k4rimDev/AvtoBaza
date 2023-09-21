@@ -12,6 +12,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from apps.product import models
+from apps.account import models as am
 from apps.product.api import serializers
 
 from apps.utils.mixins import CustomPaginationMixin
@@ -99,6 +100,10 @@ class FilterProductsAPIView(APIView, CustomPaginationMixin):
             )
     def get(self, request, *args, **kwargs):
         queryset = models.Product.objects.all()
+        try:
+            user = request.user
+        except: 
+            user = None
 
         q = self.request.GET.get("q")
         brand = self.request.GET.get("brand")
@@ -125,10 +130,22 @@ class FilterProductsAPIView(APIView, CustomPaginationMixin):
 
         page = self.paginate_queryset(queryset)
 
+        if user:
+            if user.is_authenticated:
+                user_tracking = am.UserTracking.objects.create(
+                        user=user
+                    )
+                user_tracking.description = f"""
+                    {user} istifadəçi məhsulları filter etdi, Brend: {brand if brand is not None else None},
+                    Qrup: {group if group is not None else None}, Açar sözü: {q if q is not None else None}.
+                """
+                user_tracking.save()
+
+
         if page is not None:
             serializer = serializers.ProductSerializer(page, many=True, context={'request': self.request})
             return self.get_paginated_response(serializer.data)
-
+        
         serializer = serializers.ProductSerializer(page, many=True, context={'request': self.request})
 
         return Response(serializer.data, status=status.HTTP_200_OK) 
@@ -140,10 +157,26 @@ class ProductDetailAPIView(APIView):
     
     def get(self, request, *args, **kwargs):
         slug = kwargs.get("slug")
+
+        try:
+            user = request.user
+        except: 
+            user = None
+
         queryset = get_object_or_404(models.Product, slug=slug)
 
         serializer = serializers.ProductSerializer(queryset, many=False, 
                                                    context={"request": request})
+        
+        if user:
+            if user.is_authenticated:
+                user_tracking = am.UserTracking.objects.create(
+                        user=user
+                    )
+                user_tracking.description = f"""
+                    {user} istifadəçi {queryset} məhsuluna baxdı.
+                """
+                user_tracking.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -155,13 +188,24 @@ class PriceComplaintsAPIView(APIView):
     @swagger_auto_schema(operation_description="This is for complaints of user about price of product",
                          request_body=serializers.PriceComplaintsSerializer)
     def post(self, request, *args, **kwargs):
+        user = request.user
         serializer = serializers.PriceComplaintsSerializer(
                 data=request.data, 
                 context={'request': request}
             )
 
         if serializer.is_valid():
-            serializer.save()
+            s = serializer.save()
+
+            user_tracking = am.UserTracking.objects.create(
+                        user=user
+                    )
+            user_tracking.description = f"""
+                {user} istifadəçi {s.product} məhsulunun 
+                qiymətinə narazıçılıq etdi.
+            """
+            user_tracking.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
