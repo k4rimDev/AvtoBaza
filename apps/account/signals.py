@@ -28,6 +28,14 @@ def update_user_activity(sender, instance, **kwargs):
                     transaction_type="income"
                 )
 
+                models.UserTracking.objects.create(
+                    user=instance.user,
+                    description = f"""
+                        {instance.user} istifadəçinin balansı {original_balance - old_balance.balance}
+                        qədər artırıldı.
+                    """
+                )
+
         else:
             models.UserBalance.objects.create(
                 user=instance.user,

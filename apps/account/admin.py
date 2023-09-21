@@ -7,11 +7,11 @@ from apps.account import models
 @admin.register(models.UserTracking)
 class UserTrackingAdmin(admin.ModelAdmin):
     empty_value_display = _('-boşdur-')
-    list_display = ("user", "description")
+    list_display = ("user", "description", "created_at")
     list_display_links = list_display
     search_fields = ("description", "user")
     autocomplete_fields = ('user',)
-    list_filter = ("description", )
+    list_filter = ("user", )
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-created_at',)
 
