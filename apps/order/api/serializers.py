@@ -79,7 +79,7 @@ class OrderSerializer(serializers.ModelSerializer):
         ids = validated_data.pop("ids")
         instance = om.Order.objects.create(
             user=self.context["user"],
-            comment=validated_data["comment"]
+            comment=validated_data.get("comment", None)
         )
 
         return instance
