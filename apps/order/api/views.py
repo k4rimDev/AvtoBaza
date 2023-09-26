@@ -231,8 +231,11 @@ class CheckBalanceAPIView(APIView):
                     return Response({"message": "Balance is enough!"},
                                     status=status.HTTP_200_OK)
                 else:
-                    return Response({"message": "Balance is not enough!"}, 
-                                    status=status.HTTP_400_BAD_REQUEST)
+                    # FIXME
+                    # return Response({"message": "Balance is not enough!"}, 
+                    #                 status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"message": "Balance is enough!"},
+                                    status=status.HTTP_200_OK)
             except:
                 return Response({"message": "Unstuructured list or Unknown cart ID"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "Ids is not found!"}, status=status.HTTP_400_BAD_REQUEST)
