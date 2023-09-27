@@ -3,6 +3,7 @@ from django.dispatch import receiver
 
 from apps.base_user.models import MyUser
 from apps.account import models
+from apps.order import models as om
 
 
 @receiver(post_save, sender=MyUser)

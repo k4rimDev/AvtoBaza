@@ -239,3 +239,18 @@ class CheckBalanceAPIView(APIView):
             except:
                 return Response({"message": "Unstuructured list or Unknown cart ID"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "Ids is not found!"}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserAccountInfoAPIView(APIView):
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    
+    pagination_class=None
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = serializers.UserAccountInfoSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        queryset, _ = models.UserAccount.objects.get_or_create(user=user)
+        serializer = serializers.UserAccountInfoSerializer(queryset, many=False, 
+                                                           context={'request': request})
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -24,17 +24,17 @@ if not settings.DEBUG:
         CELERY_ACCEPT_CONTENT=['json', ],
         CELERY_TASK_SERIALIZER='json',
         CELERY_RESULT_SERIALIZER='json',
-        CELERY_IMPORTS = ("apps.account.tasks",)
+        CELERY_IMPORTS = ("apps.account.tasks", "apps.order.tasks",)
     )
 else:
     app.conf.update(
-        BROKER_URL='redis://:{password}@redis:6379/0'.format(password="EJZKK7foRij2rxTA"),
-        CELERY_RESULT_BACKEND='redis://:{password}@redis:6379/1'.format(password="EJZKK7foRij2rxTA"),
+        BROKER_URL='redis://default:{password}@localhost:6379/0'.format(password="EJZKK7foRij2rxTA"),
+        CELERY_RESULT_BACKEND='redis://default:{password}@localhost:6379/1'.format(password="EJZKK7foRij2rxTA"),
         CELERY_DISABLE_RATE_LIMITS=True,
         CELERY_ACCEPT_CONTENT=['json', ],
         CELERY_TASK_SERIALIZER='json',
         CELERY_RESULT_SERIALIZER='json',
-        CELERY_IMPORTS = ("apps.account.tasks",)
+        CELERY_IMPORTS = ("apps.account.tasks", "apps.order.tasks",)
     )
 
 app.conf.beat_schedule = {

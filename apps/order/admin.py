@@ -26,3 +26,16 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ("transaction_id", "status")
     inlines = [OrderItemsInlineAdmin]
     ordering = ["-created_at"]
+
+@admin.register(models.UserAccount)
+class UserAccountAdmin(admin.ModelAdmin):
+    list_display = ("get_user", 
+                    "total_payment", "total_sale", "total_balance")
+    list_display_links = list_display
+    search_fields = ("user__username", "user__first_name", "user__last_name")
+    ordering = ["-created_at"]
+
+    def get_user(self, obj):
+        return obj.user.get_full_name
+    get_user.short_description = 'İstifadəçi'
+    get_user.admin_order_field = 'user__id'

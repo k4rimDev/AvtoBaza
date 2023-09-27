@@ -90,7 +90,7 @@ class SuggestionComplaints(models.Model):
         verbose_name_plural = _('Təklif və şikayətlər')
 
 class Slider(models.Model):
-    slug = models.SlugField(unique=True, db_index=True)
+    slug = models.SlugField(unique=True, db_index=True, blank=True, null=True)
     image = models.FileField(upload_to="core/slider")
     title = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
