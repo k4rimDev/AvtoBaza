@@ -89,7 +89,7 @@ class Order(DateMixin):
         quantity = 0
         for i in self.orderitems.all():
             if i.status == "done" or "send":
-                price += i.quantity
+                quantity += i.quantity
         return quantity
 
     def __str__(self) -> str:
