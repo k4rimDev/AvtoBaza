@@ -181,3 +181,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             "%Y-%m-%d %H:%M:%S"
         )
         return formatted_time
+    
+class UserAccountInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = om.UserAccount
+        fields = ("id", "total_payment", "total_sale", "total_balance", 
+                  "total_product_count")

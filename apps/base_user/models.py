@@ -69,6 +69,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(_('Phone Number'), max_length=25, default='+994(55) 555 55 55',
                              help_text='+994(55) 555 55 55')
     
+    address = models.TextField(_('Ünvan'), help_text='Bakı şəh. Babək pros.')
+    
     mac_address = models.CharField(_('Mac Address'), max_length=17, 
                                    unique=True, null=True, blank=True)
 
@@ -78,7 +80,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         help_text=_('Designates whether the user can log into this admin site.'),
     )
 
-    last_login_time = models.DateTimeField(_('Son cixis tarixi'), null=True, blank=True)
+    last_login_time = models.DateTimeField(_('Son çıxış tarixi'), null=True, blank=True)
 
     is_active = models.BooleanField(_('active'), default=True, help_text=_(
         'Designates whether this user should be treated as active. ''Unselect this instead of deleting accounts.'), )
@@ -96,6 +98,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('İstifadəçi')
         verbose_name_plural = _('İstifadəçilər')
 
+    @property
     def get_full_name(self):
         """
         Return the first_name plus the last_name, with a space in between.
@@ -114,5 +117,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
             return f'Email : {self.email} - - - Tel : {self.user_fields_by_type.phone} - - - Istifadəçi tipi : {self.get_type_display()}'
         except:
             return f'Moderator : {self.first_name}'
+        finally:
+            return f"""{self.username}, {self.phone}"""
 
 User = MyUser()

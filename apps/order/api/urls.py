@@ -12,5 +12,8 @@ urlpatterns = [
     path('orders/<str:transaction_id>', views.OrderDetailAPIView.as_view(), name='order_detail'),
 
     # Balance
-    path('check-balance/', views.CheckBalanceAPIView.as_view(), name='check_balance'),
+    path('check-balance/', views.CheckBalanceAPIView.as_view(), name='check_balance'), # Deprecated
+    
+    # User Account Info
+    path('user-account-info/', views.UserAccountInfoAPIView.as_view(), name='user_account_info'),
 ]
