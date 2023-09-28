@@ -77,7 +77,7 @@ def check_order_item_status(sender, instance, **kwargs):
             )
 
 @receiver(pre_save, sender=models.UserAccount)
-def change_user_remain_balance(sender, instance, created, **kwargs):
+def change_user_remain_balance(sender, instance, **kwargs):
     if instance.pk:
         previous_balance = models.UserAccount.objects.get(
             pk=instance.pk
