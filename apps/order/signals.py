@@ -50,7 +50,7 @@ def update_balance(sender, instance, created, **kwargs):
         )
 
         models.UserAccount.objects.filter(pk=user_account.pk).update(
-            total_balance = (user_balance.remain_balance + instance.total_price)
+            total_balance = (user_account.total_balance + instance.total_price)
         )
 
 @receiver(pre_save, sender=models.OrderItems)
