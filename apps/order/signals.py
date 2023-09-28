@@ -49,13 +49,16 @@ def update_balance(sender, instance, created, **kwargs):
             transaction_type="outcome"
         )
 
-        models.UserAccount.objects.filter(pk=user_account.pk).update(
-            total_balance = (user_account.total_balance + instance.total_price)
-        )
+        # models.UserAccount.objects.filter(pk=user_account.pk).update(
+        #     total_balance = (user_account.total_balance + instance.total_price)
+        # )
 
-        am.UserBalance.objects.filter(pk=user_balance.pk).update(
-            remain_balance = (user_account.total_balance + instance.total_price)
-        )
+        user_account.total_balance = (user_account.total_balance + instance.total_price)
+        user_account.save()
+
+        # am.UserBalance.objects.filter(pk=user_balance.pk).update(
+        #     remain_balance = (user_account.total_balance + instance.total_price)
+        # )
 
 @receiver(pre_save, sender=models.OrderItems)
 def check_order_item_status(sender, instance, **kwargs):
