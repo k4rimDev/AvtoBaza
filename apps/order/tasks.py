@@ -8,7 +8,7 @@ from apps.order import models
 def delayed_change_status(instance_id):
     instance = models.Order.objects.get(pk=instance_id)
     
-    time.sleep(5)
+    time.sleep(2)
 
     is_done = False
     is_canceled = False
@@ -30,4 +30,6 @@ def delayed_change_status(instance_id):
     if is_canceled and not is_done and not is_pending:
         instance.status = "canceled"
 
-    instance.save()
+    models.Order.objects.filter(pk=instance.pk).update(
+        status=instance.status
+    )
