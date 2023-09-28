@@ -41,20 +41,21 @@ def update_balance(sender, instance, created, **kwargs):
             user = instance.order.user
         )
 
-        user_balance = am.UserBalance.objects.create(
-            user=instance.order.user,
-            balance = instance.total_price,
-            order=instance,
-            description=f"{instance.product.name} məhsulunun realizasiyası",
-            transaction_type="outcome"
-        )
-
         # models.UserAccount.objects.filter(pk=user_account.pk).update(
         #     total_balance = (user_account.total_balance + instance.total_price)
         # )
 
         user_account.total_balance = (user_account.total_balance + instance.total_price)
         user_account.save()
+
+        user_balance = am.UserBalance.objects.create(
+            user=instance.order.user,
+            balance = instance.total_price,
+            order=instance,
+            remain_balance=user_account.total_sale - user_account.total_payment,
+            description=f"{instance.product.name} məhsulunun realizasiyası",
+            transaction_type="outcome"
+        )
 
         # am.UserBalance.objects.filter(pk=user_balance.pk).update(
         #     remain_balance = (user_account.total_balance + instance.total_price)

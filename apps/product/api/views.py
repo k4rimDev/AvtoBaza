@@ -113,7 +113,8 @@ class FilterProductsAPIView(APIView, CustomPaginationMixin):
         if q and q is not None:
             queryset = queryset.filter(
                 Q(name__icontains=q) |
-                Q(code__icontains=q.replace("-", ""))
+                Q(code__icontains=q.replace("-", "")) |
+                Q(brand__brand_code__icontains=q.replace("-", ""))
             )
 
         if brand and brand is not None:
