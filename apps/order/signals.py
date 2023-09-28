@@ -36,6 +36,10 @@ def update_balance(sender, instance, created, **kwargs):
         balance.balance -= instance.total_price
         balance.save()
 
+        user_account, _ = models.UserAccount.objects.get_or_create(
+            user = instance.order.user
+        )
+
         user_balance = am.UserBalance.objects.create(
             user=instance.order.user,
             balance = instance.total_price,
@@ -44,7 +48,7 @@ def update_balance(sender, instance, created, **kwargs):
             transaction_type="outcome"
         )
 
-        user_balance.remain_balance = balance.balance
+        user_balance.remain_balance = (user_account.total_balance + instance.total_price)
         user_balance.save()
 
 @receiver(pre_save, sender=models.OrderItems)
@@ -54,7 +58,7 @@ def check_order_item_status(sender, instance, **kwargs):
         if status == "returned":
             am.UserBalance.objects.create(
                 user=instance.order.user,
-                balance = instance.total_price,
+                balance=-instance.total_price,
                 order=instance,
                 description=f"Alıcıdan {instance.product.name} məhsulunun geri qaytarılması",
                 transaction_type="income"
@@ -64,8 +68,26 @@ def check_order_item_status(sender, instance, **kwargs):
                 user=instance.order.user
             )
 
-            updated_balance = account.total_balance - instance.total_price
+            updated_sale = account.total_sale - instance.total_price
+            updated_quantity = account.total_product_count - instance.quantity
 
             models.UserAccount.objects.filter(pk=account.pk).update(
-                total_balance = updated_balance
+                total_sale = updated_sale,
+                total_product_count = updated_quantity
+            )
+
+@receiver(pre_save, sender=models.UserAccount)
+def change_user_remain_balance(sender, instance, created, **kwargs):
+    if instance.pk:
+        previous_balance = models.UserAccount.objects.get(
+            pk=instance.pk
+        ).total_payment
+
+        if instance.total_payment > previous_balance:
+            am.UserBalance.objects.create(
+                user=instance.user,
+                balance = (instance.total_payment - previous_balance),
+                description = "Kassaya mədaxil orderi",
+                remain_balance = (instance.total_sale - instance.total_payment),
+                transaction_type = "income"
             )

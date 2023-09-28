@@ -46,7 +46,7 @@ class MyTokenRefreshView(TokenRefreshView):
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     
-class   BlacklistTokenUpdateView(APIView):
+class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = ()
     allowed_methods = ('GET', 'HEAD', 'POST', )

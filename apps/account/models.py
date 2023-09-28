@@ -45,13 +45,13 @@ class UserBalance(DateMixin):
     
     balance = models.FloatField(default=0, verbose_name="Balans")
     remain_balance = models.FloatField(default=0, verbose_name="Qalıq balans")
-
+    
     order = models.ForeignKey(om.OrderItems, on_delete=models.CASCADE,
                               related_name="userbalaces",
                               verbose_name="Sifariş", null=True, blank=True)
-    
+        
     description = models.CharField(max_length=100, verbose_name="Ətraflı", null=True, blank=True)
-
+        
     transaction_type = models.CharField(max_length=50, default="Mədaxil",
                                         choices=constants.TRANSACTION_TYPE,
                                         null=True, blank=True,

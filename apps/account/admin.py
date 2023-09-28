@@ -26,12 +26,16 @@ class UserBalanceAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-created_at',)
 
-@admin.register(models.Balance)
-class BalanceAdmin(admin.ModelAdmin):
-    empty_value_display = _('-boşdur-')
-    list_display = ("user", "balance")
-    list_display_links = list_display
-    search_fields = ("user", )
-    autocomplete_fields = ('user',)
-    readonly_fields = ('created_at', 'updated_at')
-    ordering = ('-created_at',)
+
+"""
+    User Balance is deprecated instead of this use Order.UserAccount model
+"""
+# @admin.register(models.Balance)
+# class BalanceAdmin(admin.ModelAdmin):
+#     empty_value_display = _('-boşdur-')
+#     list_display = ("user", "balance")
+#     list_display_links = list_display
+#     search_fields = ("user", )
+#     autocomplete_fields = ('user',)
+#     readonly_fields = ('created_at', 'updated_at')
+#     ordering = ('-created_at',)

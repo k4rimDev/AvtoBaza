@@ -161,7 +161,7 @@ class UserAccount(DateMixin):
     total_payment = models.FloatField(default=0, verbose_name="Ümumi ödəniş")
     total_sale = models.FloatField(default=0, verbose_name="Ümumi satış")
     total_balance = models.FloatField(default=0, verbose_name="Ümumi qalıq")
-    total_product_count = models.PositiveIntegerField(default=1, verbose_name="Ümumi məhsul sayı")
+    total_product_count = models.PositiveIntegerField(default=0, verbose_name="Ümumi məhsul sayı")
 
     def __str__(self) -> str:
         return "{user}'in səbəti".format(user=self.user.email)
