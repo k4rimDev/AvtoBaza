@@ -26,15 +26,16 @@ def generate_transaction_id(sender, instance, created, **kwargs):
 @receiver(post_save, sender=models.OrderItems)
 def update_balance(sender, instance, created, **kwargs):
     if instance.status == "done" or instance.status == "send":
-        
-        instance.transaction_id = services.generate_unique_id_order_items(instance.id)
-        instance.save()
 
-        balance = am.Balance.objects.get(
-            user=instance.order.user
+        models.OrderItems.objects.filter(pk=instance.pk).update(
+            transaction_id=services.generate_unique_id_order_items(instance.id)
         )
-        balance.balance -= instance.total_price
-        balance.save()
+
+        # balance = am.Balance.objects.get(
+        #     user=instance.order.user
+        # )
+        # balance.balance -= instance.total_price
+        # balance.save()
 
         user_account, _ = models.UserAccount.objects.get_or_create(
             user = instance.order.user
@@ -48,8 +49,8 @@ def update_balance(sender, instance, created, **kwargs):
             transaction_type="outcome"
         )
 
-        models.UserAccount.objects.filter(pk=user_balance.pk).update(
-            remain_balance = (user_account.total_balance + instance.total_price)
+        models.UserAccount.objects.filter(pk=user_account.pk).update(
+            total_balance = (user_balance.remain_balance + instance.total_price)
         )
 
 @receiver(pre_save, sender=models.OrderItems)
